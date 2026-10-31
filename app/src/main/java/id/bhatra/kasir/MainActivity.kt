@@ -3,6 +3,8 @@ package id.bhatra.kasir
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.ClipboardManager
+import android.content.ComponentName
+import android.service.notification.NotificationListenerService
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -74,6 +76,10 @@ class MainActivity : Activity() {
 
     override fun onResume() {
         super.onResume()
+        if (listening()) {
+            if (Build.VERSION.SDK_INT >= 24) NotificationListenerService.requestRebind(ComponentName(this, NotifService::class.java))
+            Sender.ping(this, force = true)
+        }
         refresh()
     }
 
@@ -161,8 +167,9 @@ class MainActivity : Activity() {
         val log = Sender.readLog(this)
         if (log.isEmpty()) logView.addView(text("Belum ada.", 14, false, Color.DKGRAY))
         log.forEach { (t, r, x) ->
-            val good = r.startsWith("lunas")
-            logView.addView(text("$t · ${if (good) "✓ " else ""}$r", 15, true, if (good) ok else red).also { it.setPadding(0, dp(10), 0, 0) })
+            val good = r.startsWith("lunas") || r.startsWith("terhubung")
+            val label = if (r.startsWith("terhubung")) "Terhubung" else r
+            logView.addView(text("$t · ${if (good) "✓ " else ""}$label", 15, true, if (good) ok else red).also { it.setPadding(0, dp(10), 0, 0) })
             logView.addView(text(x, 13, false, Color.DKGRAY))
         }
     }

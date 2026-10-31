@@ -1,13 +1,27 @@
 package id.bhatra.kasir
 
 import android.app.Notification
+import android.content.ComponentName
+import android.os.Build
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 
 class NotifService : NotificationListenerService() {
     private val recent = ArrayDeque<String>()
 
+    override fun onListenerConnected() {
+        super.onListenerConnected()
+        Sender.ping(this, force = true)
+    }
+
+    // Kalau sistem memutus layanan (hemat baterai, update), minta disambungkan lagi.
+    override fun onListenerDisconnected() {
+        super.onListenerDisconnected()
+        if (Build.VERSION.SDK_INT >= 24) requestRebind(ComponentName(this, NotifService::class.java))
+    }
+
     override fun onNotificationPosted(sbn: StatusBarNotification) {
+        Sender.ping(this) // lapor "masih hidup" ke dashboard, maks. tiap 10 menit
         val pkg = sbn.packageName ?: return
         if (!pkg.contains("dana", ignoreCase = true)) return
         val ex = sbn.notification?.extras ?: return

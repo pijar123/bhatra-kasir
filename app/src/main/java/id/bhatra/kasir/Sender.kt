@@ -21,6 +21,26 @@ object Sender {
     fun extractSecret(input: String): String? =
         Regex("[0-9a-f]{24}").find(input.lowercase(Locale.ROOT))?.value
 
+    private const val PING = "https://wtmzvxmghlwukjwfvpmp.supabase.co/rest/v1/rpc/kasir_ping"
+
+    /** Kabari dashboard bahwa HP kasir masih aktif. */
+    fun ping(ctx: Context, force: Boolean = false) {
+        val app = ctx.applicationContext
+        val p = prefs(app)
+        val now = System.currentTimeMillis()
+        if (secret(app).isEmpty() || (!force && now - p.getLong("lastPing", 0) < 10 * 60_000L)) return
+        p.edit().putLong("lastPing", now).apply()
+        Thread {
+            try {
+                val c = URL(PING).openConnection() as HttpURLConnection
+                c.requestMethod = "POST"; c.doOutput = true; c.connectTimeout = 15000; c.readTimeout = 15000
+                c.setRequestProperty("apikey", API_KEY); c.setRequestProperty("Content-Type", "application/json")
+                c.outputStream.use { it.write(JSONObject().put("p_secret", secret(app)).toString().toByteArray()) }
+                c.responseCode
+            } catch (e: Exception) { p.edit().putLong("lastPing", 0).apply() }
+        }.start()
+    }
+
     fun send(ctx: Context, text: String, onDone: ((String) -> Unit)? = null) {
         val app = ctx.applicationContext
         Thread {
