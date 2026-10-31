@@ -24,11 +24,11 @@ object Sender {
     private const val PING = "https://wtmzvxmghlwukjwfvpmp.supabase.co/rest/v1/rpc/kasir_ping"
 
     /** Kabari dashboard bahwa HP kasir masih aktif. */
-    fun ping(ctx: Context, force: Boolean = false) {
+    fun ping(ctx: Context, force: Boolean = false): Boolean {
         val app = ctx.applicationContext
         val p = prefs(app)
         val now = System.currentTimeMillis()
-        if (secret(app).isEmpty() || (!force && now - p.getLong("lastPing", 0) < 10 * 60_000L)) return
+        if (secret(app).isEmpty() || (!force && now - p.getLong("lastPing", 0) < 10 * 60_000L)) return false
         p.edit().putLong("lastPing", now).apply()
         Thread {
             try {
@@ -38,6 +38,70 @@ object Sender {
                 c.outputStream.use { it.write(JSONObject().put("p_secret", secret(app)).toString().toByteArray()) }
                 c.responseCode
             } catch (e: Exception) { p.edit().putLong("lastPing", 0).apply() }
+        }.start()
+        return true
+    }
+
+    /** Tandai notifikasi sudah diproses. false kalau sudah pernah (jangan kirim dua kali). */
+    @Synchronized
+    fun markSeen(ctx: Context, key: String): Boolean {
+        val p = prefs(ctx.applicationContext)
+        val arr = JSONArray(p.getString("seen", "[]"))
+        for (i in 0 until arr.length()) if (arr.getString(i) == key) return false
+        val out = JSONArray().put(key)
+        for (i in 0 until minOf(arr.length(), 199)) out.put(arr.get(i))
+        p.edit().putString("seen", out.toString()).apply()
+        return true
+    }
+
+    /** Simpan pembayaran ke antrean lalu coba kirim. Antrean bertahan walau HP tanpa sinyal atau dimatikan. */
+    @Synchronized
+    fun enqueue(ctx: Context, text: String) {
+        val p = prefs(ctx.applicationContext)
+        val arr = JSONArray(p.getString("queue", "[]"))
+        arr.put(text)
+        while (arr.length() > 50) arr.remove(0)
+        p.edit().putString("queue", arr.toString()).apply()
+        flush(ctx)
+    }
+
+    fun queueSize(ctx: Context): Int = JSONArray(prefs(ctx.applicationContext).getString("queue", "[]")).length()
+
+    @Synchronized
+    private fun takeFirst(app: Context): String? {
+        val arr = JSONArray(prefs(app).getString("queue", "[]"))
+        return if (arr.length() == 0) null else arr.getString(0)
+    }
+
+    @Synchronized
+    private fun dropFirst(app: Context) {
+        val p = prefs(app)
+        val arr = JSONArray(p.getString("queue", "[]"))
+        if (arr.length() > 0) arr.remove(0)
+        p.edit().putString("queue", arr.toString()).apply()
+    }
+
+    private val flushing = java.util.concurrent.atomic.AtomicBoolean(false)
+
+    /** Kirim semua antrean. Berhenti kalau internet belum ada; dicoba lagi saat sinyal kembali. */
+    fun flush(ctx: Context) {
+        val app = ctx.applicationContext
+        if (secret(app).isEmpty() || !flushing.compareAndSet(false, true)) return
+        Thread {
+            try {
+                while (true) {
+                    val text = takeFirst(app) ?: break
+                    var result = "gagal"
+                    for (attempt in 1..3) {
+                        result = post(secret(app), text)
+                        if (!result.startsWith("gagal")) break
+                        Thread.sleep(4000L * attempt)
+                    }
+                    if (result.startsWith("gagal")) { log(app, text, "menunggu sinyal"); break }
+                    dropFirst(app)
+                    log(app, text, result)
+                }
+            } finally { flushing.set(false) }
         }.start()
     }
 

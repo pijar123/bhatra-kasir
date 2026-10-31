@@ -79,6 +79,7 @@ class MainActivity : Activity() {
         if (listening()) {
             if (Build.VERSION.SDK_INT >= 24) NotificationListenerService.requestRebind(ComponentName(this, NotifService::class.java))
             Sender.ping(this, force = true)
+            Sender.flush(this)
         }
         refresh()
     }
@@ -157,7 +158,7 @@ class MainActivity : Activity() {
         secretInput.setText(if (s) "••••••••••••" else "")
         val ready = l && s
         status.text = when {
-            ready -> "AKTIF · siap menandai Lunas otomatis"
+            ready -> "AKTIF · siap menandai Lunas otomatis" + Sender.queueSize(this).let { if (it > 0) "\n$it pembayaran menunggu sinyal, terkirim otomatis" else "" }
             !s -> "Belum aktif · buka bhatra.id/admin.html → Atur → \"Hubungkan HP ini\""
             else -> "Belum aktif · izinkan baca notifikasi"
         }
