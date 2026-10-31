@@ -17,11 +17,24 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.7"
-      - run: gradle assembleDebug --no-daemon
-      - run: cp app/build/outputs/apk/debug/app-debug.apk bhatra-kasir.apk
+      - name: Siapkan kunci tanda tangan
+        env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE_B64 }}
+        run: |
+          if [ -z "$KEYSTORE_B64" ]; then echo "::error::Secret KEYSTORE_B64 belum diisi"; exit 1; fi
+          echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/release.jks"
+          echo "KEYSTORE_FILE=$RUNNER_TEMP/release.jks" >> "$GITHUB_ENV"
+      - run: gradle assembleRelease bundleRelease --no-daemon
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      - run: |
+          cp app/build/outputs/apk/release/app-release.apk bhatra-kasir.apk
+          cp app/build/outputs/bundle/release/app-release.aab bhatra-kasir.aab
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ github.run_number }}
           name: BHATRA Kasir v${{ github.run_number }}
-          files: bhatra-kasir.apk
+          files: |
+            bhatra-kasir.apk
+            bhatra-kasir.aab
           make_latest: "true"
