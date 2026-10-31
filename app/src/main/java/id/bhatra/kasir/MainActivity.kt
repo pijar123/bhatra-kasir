@@ -37,6 +37,7 @@ class MainActivity : Activity() {
     // Langkah otomatis: tiap izin hanya ditawarkan sekali per kunjungan, supaya tidak memaksa.
     private var askedListener = 0
     private var askedBattery = false
+    private var askedPost = false
     private var dialogOpen = false
 
     private fun dp(v: Int) = (v * resources.displayMetrics.density).toInt()
@@ -60,6 +61,9 @@ class MainActivity : Activity() {
 
         root.addView(section("Tes koneksi"))
         root.addView(button("Kirim tes", ink) { sendTest() })
+        root.addView(button("Tes bunyi pesanan baru", ink) {
+            Orders.show(this, "TES", "Pesanan baru #TES · Rp25.000", "2× Ayam Bawang Putih (Geprek), 1× Es Teh\nContoh · Antar · QRIS")
+        })
 
         root.addView(section("Riwayat"))
         logView = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
@@ -108,6 +112,11 @@ class MainActivity : Activity() {
         if (dialogOpen || isFinishing) return
         when {
             !hasSecret() -> Unit // tunggu link dari dashboard atau tempel manual
+            Build.VERSION.SDK_INT >= 33 && !askedPost &&
+                checkSelfPermission("android.permission.POST_NOTIFICATIONS") != android.content.pm.PackageManager.PERMISSION_GRANTED -> {
+                askedPost = true
+                requestPermissions(arrayOf("android.permission.POST_NOTIFICATIONS"), 7)
+            }
             !listening() && askedListener == 0 -> {
                 askedListener = 1
                 popup("Izinkan baca notifikasi",

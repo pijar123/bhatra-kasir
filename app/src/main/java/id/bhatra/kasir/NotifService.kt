@@ -6,6 +6,8 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 
@@ -17,12 +19,17 @@ import android.service.notification.StatusBarNotification
  */
 class NotifService : NotificationListenerService() {
     private var netCb: ConnectivityManager.NetworkCallback? = null
+    private val handler = Handler(Looper.getMainLooper())
+    private val poll = object : Runnable {
+        override fun run() { Orders.poll(this@NotifService); handler.postDelayed(this, 20_000L) }
+    }
 
     override fun onListenerConnected() {
         super.onListenerConnected()
         Sender.ping(this, force = true)
         scanActive()
         Sender.flush(this)
+        handler.removeCallbacks(poll); handler.post(poll)
         try {
             val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             val cb = object : ConnectivityManager.NetworkCallback() {
@@ -36,11 +43,13 @@ class NotifService : NotificationListenerService() {
     // Kalau sistem memutus layanan (hemat baterai, update), minta disambungkan lagi.
     override fun onListenerDisconnected() {
         super.onListenerDisconnected()
+        handler.removeCallbacks(poll)
         unregisterNet()
         if (Build.VERSION.SDK_INT >= 24) requestRebind(ComponentName(this, NotifService::class.java))
     }
 
     override fun onDestroy() {
+        handler.removeCallbacks(poll)
         unregisterNet()
         super.onDestroy()
     }

@@ -105,6 +105,16 @@ object Sender {
         }.start()
     }
 
+    /** Panggil fungsi server; hasil teks JSON, atau null kalau gagal. */
+    fun rpc(url: String, body: JSONObject): String? = try {
+        val c = URL(url).openConnection() as HttpURLConnection
+        c.requestMethod = "POST"; c.doOutput = true; c.connectTimeout = 15000; c.readTimeout = 15000
+        c.setRequestProperty("apikey", API_KEY); c.setRequestProperty("Content-Type", "application/json")
+        c.outputStream.use { it.write(body.toString().toByteArray()) }
+        val code = c.responseCode
+        if (code < 400) c.inputStream.bufferedReader().use { it.readText() } else null
+    } catch (e: Exception) { null }
+
     fun send(ctx: Context, text: String, onDone: ((String) -> Unit)? = null) {
         val app = ctx.applicationContext
         Thread {
