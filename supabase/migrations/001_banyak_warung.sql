@@ -37,6 +37,8 @@ create table if not exists shops (
   suspended boolean not null default false,
   created_at timestamptz not null default now()
 );
+alter table shops add column if not exists logo_url text;
+alter table shops add column if not exists about text check (length(about) <= 120);
 create table if not exists shop_members (
   shop_id uuid not null references shops on delete cascade,
   user_id uuid not null references auth.users on delete cascade,
@@ -63,6 +65,8 @@ select '00000000-0000-4000-8000-0000000000b1', 'bhatra', 'Warung Jajan BHATRA', 
        coalesce(s.max_km, 10), s.shop_lat, s.shop_lng, s.categories, s.banners, s.prep_min, s.free_ongkir_min
 from settings s where s.id = 1
 on conflict (id) do nothing;
+update shops set logo_url = coalesce(logo_url, '/img/logo.svg'), about = coalesce(about, 'Masakan rumahan, harga pelajar.')
+ where id = '00000000-0000-4000-8000-0000000000b1';
 
 insert into shop_members (shop_id, user_id)
 select '00000000-0000-4000-8000-0000000000b1', id from auth.users

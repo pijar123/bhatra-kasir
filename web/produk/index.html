@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<base href="/">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Toko online untuk warung</title>
+<meta name="description" content="Pembeli pesan lewat link, Anda terima di HP. Ongkir otomatis, QRIS, tanpa potongan per pesanan. Coba gratis 14 hari.">
+<meta name="theme-color" content="#C8372D">
+<link rel="icon" href="img/toko-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap">
+<style>
+/* Layout: satu kolom lebar 1040, hero dua kolom (pesan + mock HP), lalu bagian berurutan alur jual */
+:root{--red:#C8372D;--red-d:#A82A21;--gold:#F2B33D;--butter:#FFE9A8;--ink:#3A1E12;--muted:#7A5E4F;--cream:#FFF7EC;--card:#FFFFFF;--line:#F0DEC6;--mint:#DDF3E4;--ok:#2F7D4F;
+  --fd:'Bricolage Grotesque',system-ui,sans-serif;--fb:'Plus Jakarta Sans',system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--cream);color:var(--ink);font:500 16px/1.55 var(--fb);-webkit-font-smoothing:antialiased}
+a{color:var(--red-d)}
+.wrap{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
+h1,h2,h3{font-family:var(--fd);font-weight:800;letter-spacing:-.02em;text-wrap:balance;margin:0}
+h1{font-size:clamp(34px,6vw,58px);line-height:1.02}
+h2{font-size:clamp(26px,4vw,38px);line-height:1.1}
+h3{font-size:19px;line-height:1.2}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:16px}
+.brand{display:flex;align-items:center;gap:10px;font:800 20px var(--fd);text-decoration:none;color:var(--ink)}
+.brand img{width:34px;height:34px;border-radius:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 22px;border-radius:16px;font:800 16px var(--fb);text-decoration:none;border:2px solid var(--ink);cursor:pointer}
+.btn-red{background:var(--red);color:#fff;box-shadow:0 4px 0 var(--ink)}
+.btn-red:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.btn-ghost{background:#fff;color:var(--ink)}
+.btn-sm{min-height:42px;padding:0 16px;font-size:14px;border-radius:12px}
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center;padding-block:28px 56px}
+.hero p.lead{font-size:19px;color:var(--muted);margin:18px 0 26px;max-width:34ch}
+.ctas{display:flex;gap:12px;flex-wrap:wrap}
+.tiny{font-size:14px;color:var(--muted);margin-top:14px}
+.hl{background:linear-gradient(transparent 62%,var(--gold) 62%)}
+/* mock HP */
+.phone{justify-self:center;width:min(300px,100%);background:var(--ink);border-radius:38px;padding:12px;box-shadow:0 18px 40px rgba(58,30,18,.22)}
+.screen{background:var(--cream);border-radius:28px;padding:16px 14px 18px;min-height:480px}
+.ntf{background:#fff;border-radius:16px;padding:10px 12px;font-size:13px;box-shadow:0 2px 0 var(--line);margin-bottom:12px}
+.ntf b{display:block;font-size:13px}.ntf span{color:var(--muted)}
+.ord{background:#fff;border:2px solid var(--ink);border-radius:18px;padding:12px;margin-top:10px}
+.ord .top{display:flex;justify-content:space-between;font:800 15px var(--fd)}
+.pill{display:inline-block;font-size:11px;font-weight:800;padding:3px 9px;border-radius:99px;margin:6px 4px 0 0;background:var(--butter)}
+.pill.ok{background:var(--mint);color:var(--ok)}
+.ord ul{margin:8px 0 0;padding:0;list-style:none;font-size:13px}
+.ord li{display:flex;justify-content:space-between}
+section{padding-block:48px}
+.sub{color:var(--muted);font-size:17px;margin:10px 0 0;max-width:60ch}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:28px}
+.box{background:var(--card);border:1.5px solid var(--line);border-radius:22px;padding:20px;min-width:0}
+.box p{margin:8px 0 0;color:var(--muted);font-size:15px}
+.num{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--red);color:#fff;font:800 16px var(--fd);margin-bottom:10px}
+.band{background:var(--ink);color:var(--cream)}
+.band .sub{color:#E9D6C4}
+.cmp{width:100%;border-collapse:collapse;margin-top:24px;font-size:15px;min-width:560px}
+.cmp th,.cmp td{text-align:left;padding:12px 10px;border-bottom:1px solid rgba(255,247,236,.18);vertical-align:top}
+.cmp th{font:700 13px var(--fb);color:#E9D6C4;letter-spacing:.04em;text-transform:uppercase}
+.cmp tr.us td{color:#fff;font-weight:800}
+.scroll{overflow-x:auto}
+.prices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:28px;max-width:820px}
+.price{background:#fff;border:2px solid var(--ink);border-radius:24px;padding:22px;display:flex;flex-direction:column;gap:6px}
+.price.pro{box-shadow:6px 6px 0 var(--gold)}
+.price .amt{font:800 38px var(--fd)}.price .amt small{font:600 15px var(--fb);color:var(--muted)}
+.price ul{margin:8px 0 16px;padding-left:20px;flex:1}
+.price li{margin:4px 0}
+.tag{align-self:flex-start;font-size:12px;font-weight:800;background:var(--gold);padding:3px 10px;border-radius:99px}
+details{background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:14px 16px;margin-top:10px}
+summary{font-weight:800;cursor:pointer}
+details p{margin:8px 0 0;color:var(--muted)}
+footer{padding-block:32px 48px;color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
+footer .wrap{display:flex;gap:16px;justify-content:space-between;flex-wrap:wrap}
+@media (max-width:820px){.hero{grid-template-columns:1fr}.grid3{grid-template-columns:1fr}.prices{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="wrap nav">
+  <a class="brand" href="/produk/"><img src="img/toko-192.png" alt=""><span class="pname">Dapurin</span></a>
+  <div style="display:flex;gap:8px"><a class="btn btn-ghost btn-sm" href="/owner/">Masuk</a><a class="btn btn-red btn-sm" href="/daftar/">Coba gratis</a></div>
+</header>
+
+<main>
+  <div class="wrap hero">
+    <div>
+      <h1>Pesanan warung masuk rapi, <span class="hl">uangnya utuh</span>.</h1>
+      <p class="lead">Toko online untuk warung rumahan. Pembeli pesan dari link, HP Anda berbunyi, ongkir dihitung sendiri. Tanpa potongan per pesanan.</p>
+      <div class="ctas"><a class="btn btn-red" href="/daftar/">Coba gratis <span class="days">14</span> hari</a><a class="btn btn-ghost" href="https://bhatra.id" target="_blank" rel="noopener">Lihat contoh toko</a></div>
+      <p class="tiny">Tanpa kartu kredit. Buka toko dari HP dalam ±15 menit.</p>
+    </div>
+    <div class="phone" aria-label="Contoh tampilan pesanan di HP penjual">
+      <div class="screen">
+        <div class="ntf"><b>Pesanan baru #A7F21 · Rp38.000</b><span>2× Ayam Bawang Putih (Geprek), 1× Es Teh</span></div>
+        <div class="ord"><div class="top"><span>#A7F21</span><span>12.41</span></div>
+          <span class="pill">Baru</span><span class="pill">Antar · 1,8 km</span><span class="pill ok">QRIS · Lunas</span>
+          <ul><li><span>2× Ayam Bawang Putih</span><span>Rp32.000</span></li><li><span>1× Es Teh</span><span>Rp3.000</span></li><li><span>Ongkir</span><span>Rp2.000</span></li><li><b>Total</b><b>Rp38.017</b></li></ul></div>
+        <div class="ord"><div class="top"><span>#3C0D9</span><span>12.29</span></div>
+          <span class="pill">Dimasak</span><span class="pill">Ambil di tempat</span><span class="pill">Tunai</span></div>
+        <p style="font-size:12px;color:var(--muted);margin:12px 4px 0">Contoh tampilan · data ilustrasi</p>
+      </div>
+    </div>
+  </div>
+
+  <section class="wrap" aria-labelledby="masalah">
+    <h2 id="masalah">Jualan lewat WA itu capek. Lewat ojol, untungnya dipotong.</h2>
+    <div class="grid3">
+      <div class="box"><h3>Pesanan tercecer di chat</h3><p>Semua pesanan masuk ke satu daftar, lengkap dengan isi, alamat, dan titik peta. Status tinggal digeser: diterima, dimasak, diantar.</p></div>
+      <div class="box"><h3>Repot hitung ongkir</h3><p>Pembeli menandai lokasi di peta, ongkir per km langsung terhitung. Jangkauan maksimal dan gratis ongkir bisa diatur sendiri.</p></div>
+      <div class="box"><h3>Cek transfer satu per satu</h3><p>QRIS muncul dengan nominal pas. Di paket Pro, uang masuk di DANA langsung menandai pesanan Lunas otomatis.</p></div>
+    </div>
+  </section>
+
+  <section class="wrap" aria-labelledby="cara">
+    <h2 id="cara">Tiga langkah, semuanya dari HP</h2>
+    <div class="grid3">
+      <div class="box"><span class="num">1</span><h3>Daftar dan isi menu</h3><p>Nama toko, nomor WA, menu dan harga. Mau dibantu? Ada jasa setup: kami ketikkan menu dan buatkan banner.</p></div>
+      <div class="box"><span class="num">2</span><h3>Bagikan link toko</h3><p>Taruh di status WA, bio Instagram, dan grup RT. Pelanggan bisa memasang toko Anda seperti aplikasi.</p></div>
+      <div class="box"><span class="num">3</span><h3>Terima pesanan</h3><p>HP berbunyi tiap ada pesanan. Kabari pembeli dan kirim struk lewat WA dengan satu ketukan.</p></div>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="banding">
+    <div class="wrap">
+      <h2 id="banding">Dibanding pilihan lain</h2>
+      <p class="sub">Ojek online tetap berguna untuk pembeli jauh. Untuk pelanggan tetap dan tetangga, jangan bayar komisi.</p>
+      <div class="scroll"><table class="cmp">
+        <thead><tr><th>Pilihan</th><th>Biaya</th><th>Pelanggan milik</th></tr></thead>
+        <tbody>
+          <tr><td>Ojek online</td><td>Potongan sekitar 15–25% tiap pesanan</td><td>Platform</td></tr>
+          <tr><td>Aplikasi kasir lengkap</td><td>Ratusan ribu per bulan per outlet</td><td>Anda, tapi rumit untuk dapur rumahan</td></tr>
+          <tr><td>Chat WA manual</td><td>Gratis</td><td>Anda, tapi pesanan tercecer</td></tr>
+          <tr class="us"><td class="pname">Dapurin</td><td>Mulai Rp49rb per bulan, tanpa potongan</td><td>Anda</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <section class="wrap" id="harga" aria-labelledby="harga-h">
+    <h2 id="harga-h">Harga</h2>
+    <p class="sub">Coba semua fitur Pro gratis <span class="days">14</span> hari. Setelah itu pilih paket. Bayar tahunan, gratis 2 bulan.</p>
+    <div class="prices">
+      <div class="price"><h3>Dasar</h3><div class="amt"><span class="p-dasar">Rp49.000</span><small>/bulan</small></div>
+        <ul><li>Toko online dengan link sendiri</li><li>Pesanan masuk, status, kabari pembeli</li><li>Ongkir otomatis dari peta</li><li>Bayar tunai dan QRIS (cek manual)</li><li>Rekap harian</li></ul>
+        <a class="btn btn-ghost" href="/daftar/">Mulai coba gratis</a></div>
+      <div class="price pro"><span class="tag">Paling hemat waktu</span><h3>Pro</h3><div class="amt"><span class="p-pro">Rp99.000</span><small>/bulan</small></div>
+        <ul><li>Semua fitur Dasar</li><li>QRIS lunas otomatis dari notifikasi DANA</li><li>HP berbunyi tiap pesanan baru, walau terkunci</li><li>Kode promo, harga coret, stok harian, banner</li><li>Rekap 30 hari dan unduh Excel</li></ul>
+        <a class="btn btn-red" href="/daftar/">Mulai coba gratis</a></div>
+    </div>
+    <p class="tiny">Jasa setup sekali bayar Rp150–300rb: kami ketikkan menu, buatkan banner, logo, atau poster menu.</p>
+  </section>
+
+  <section class="wrap" aria-labelledby="faq">
+    <h2 id="faq">Pertanyaan</h2>
+    <details><summary>Perlu laptop?</summary><p>Tidak. Daftar, isi menu, dan terima pesanan semuanya dari HP.</p></details>
+    <details><summary>Pembeli harus pasang aplikasi?</summary><p>Tidak. Pembeli cukup membuka link toko. Kalau mau, toko bisa dipasang di layar utama HP seperti aplikasi.</p></details>
+    <details><summary>QRIS dari mana?</summary><p>Pakai QRIS statis milik toko Anda (DANA Bisnis, GoPay Merchant, ShopeePay, bank). Unggah fotonya di dashboard; nominal terisi otomatis untuk tiap pesanan. Lunas otomatis saat ini mendukung notifikasi DANA Bisnis.</p></details>
+    <details><summary>Uang pembeli masuk ke mana?</summary><p>Langsung ke QRIS atau tangan Anda. Kami tidak memegang uang pembeli dan tidak memotong per pesanan.</p></details>
+    <details><summary>Kalau berhenti langganan?</summary><p>Toko berhenti menerima pesanan online. Data menu dan rekap tetap ada kalau Anda kembali.</p></details>
+    <details><summary>Bayar langganan bagaimana?</summary><p>Lewat transfer atau QRIS ke kami, dengan konfirmasi lewat WhatsApp. Paket aktif paling lambat 1×24 jam.</p></details>
+  </section>
+
+  <section class="wrap" style="text-align:center">
+    <h2>Buka toko online hari ini</h2>
+    <p class="sub" style="margin-inline:auto">Gratis <span class="days">14</span> hari. Kalau tidak cocok, cukup tidak diteruskan.</p>
+    <div class="ctas" style="justify-content:center;margin-top:20px"><a class="btn btn-red" href="/daftar/">Coba gratis</a><a class="btn btn-ghost" id="waCta" target="_blank" rel="noopener">Tanya lewat WA</a></div>
+  </section>
+</main>
+
+<footer><div class="wrap"><span>© <span id="yr"></span> <span class="pname">Dapurin</span> · dibuat di Kebumen</span><span><a href="/legal/syarat.html">Syarat Layanan</a> · <a href="/legal/privasi.html">Kebijakan Privasi</a></span></div></footer>
+<script src="config.js"></script>
+<script>
+  document.querySelectorAll('.pname').forEach(e => { e.textContent = CONFIG.PRODUCT; });
+  document.querySelectorAll('.days').forEach(e => { e.textContent = CONFIG.TRIAL_DAYS; });
+  const rp = n => 'Rp' + n.toLocaleString('id-ID');
+  document.querySelector('.p-dasar').textContent = rp(CONFIG.PRICES.dasar); document.querySelector('.p-pro').textContent = rp(CONFIG.PRICES.pro);
+  document.getElementById('waCta').href = 'https://wa.me/' + CONFIG.SUPPORT_WA + '?text=' + encodeURIComponent('Halo, saya mau tanya soal toko online ' + CONFIG.PRODUCT + '.');
+  document.getElementById('yr').textContent = new Date().getFullYear();
+  document.title = CONFIG.PRODUCT + ' · Toko online untuk warung';
+</script>
+</body>
+</html>

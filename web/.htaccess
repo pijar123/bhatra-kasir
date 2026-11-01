@@ -1,0 +1,30 @@
+# Hostinger / Apache. Taruh di public_html.
+Options -Indexes
+DirectoryIndex index.html
+RewriteEngine On
+
+# Paksa HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Alamat lama BHATRA
+RewriteRule ^admin(\.html|/)?$ /owner/ [L,R=301]
+
+# File dan folder yang ada dilayani langsung
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# /nama-toko -> halaman toko (dipakai kalau CONFIG.PRETTY_PATHS = true)
+RewriteRule ^([a-z0-9][a-z0-9-]{1,28}[a-z0-9])/?$ /index.html [L]
+
+<IfModule mod_headers.c>
+  <FilesMatch "(sw\.js|config\.js|\.html)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+  <FilesMatch "\.(png|svg|webp|woff2)$">
+    Header set Cache-Control "public, max-age=604800"
+  </FilesMatch>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

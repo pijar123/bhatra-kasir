@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<base href="/">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Buka toko online</title>
+<meta name="description" content="Buka toko online untuk warung dalam 15 menit. Coba gratis 14 hari, tanpa potongan per pesanan.">
+<meta name="theme-color" content="#C8372D">
+<link rel="icon" href="img/toko-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap">
+<link rel="stylesheet" href="app.css">
+<style>
+  .steps-top{display:flex;gap:8px;margin:20px 0 8px}
+  .steps-top span{flex:1;height:6px;border-radius:9px;background:var(--line)}
+  .steps-top span.on{background:var(--red)}
+  .slug-row{display:flex;align-items:center;gap:0;border:1.5px solid var(--line);border-radius:14px;background:#fff;overflow:hidden;margin-top:6px}
+  .slug-row span{padding:0 0 0 12px;color:var(--muted);font-weight:700;white-space:nowrap;font-size:14px}
+  .slug-row input{border:0;margin:0;min-width:0;flex:1}
+  .hint{font-size:13px;margin:6px 0 0;font-weight:700}
+  .hint.ok{color:var(--ok)} .hint.bad{color:var(--red-d)}
+  .check{display:flex;gap:10px;align-items:flex-start;font-size:14px;font-weight:600;margin:12px 0}
+  .check input{width:20px;height:20px;margin:2px 0 0;accent-color:var(--red);flex:none}
+</style>
+</head>
+<body>
+<main class="wrap" style="max-width:480px;padding-bottom:48px">
+  <div class="steps-top" aria-hidden="true"><span id="st1" class="on"></span><span id="st2"></span><span id="st3"></span></div>
+
+  <section id="vAkun" class="card" hidden>
+    <h1>Buka toko online</h1>
+    <p class="muted" style="margin:6px 0 16px">Gratis <span id="trialDays">14</span> hari. Tanpa potongan per pesanan. Langkah 1 dari 2: buat akun.</p>
+    <form id="fAkun" novalidate>
+      <label>Email<input name="email" type="email" autocomplete="email" required placeholder="nama@gmail.com"></label>
+      <label>Password<input name="password" type="password" autocomplete="new-password" minlength="8" required placeholder="Minimal 8 karakter"></label>
+      <label class="check"><input type="checkbox" name="agree" required><span>Saya setuju dengan <a href="/legal/syarat.html" target="_blank">Syarat Layanan</a> dan <a href="/legal/privasi.html" target="_blank">Kebijakan Privasi</a>.</span></label>
+      <p class="err" id="eAkun" hidden></p>
+      <button class="btn btn-red" type="submit" id="bAkun">Buat akun</button>
+    </form>
+    <p class="muted" style="margin-top:16px;font-size:14px">Sudah punya akun? <a href="/owner/" style="font-weight:800">Masuk</a></p>
+  </section>
+
+  <section id="vCek" class="card" hidden>
+    <h1>Cek email kamu</h1>
+    <p style="margin:8px 0">Kami mengirim link konfirmasi ke <b id="cekEmail"></b>. Buka email itu dan ketuk link-nya; kamu akan kembali ke sini untuk lanjut membuat toko.</p>
+    <p class="muted" style="font-size:14px">Tidak ada di Kotak Masuk? Lihat folder Spam atau Promosi.</p>
+    <form id="fMasuk" style="margin-top:16px" novalidate>
+      <p class="lbl">Sudah konfirmasi? Masuk di sini:</p>
+      <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+      <p class="err" id="eMasuk" hidden></p>
+      <button class="btn btn-ghost" type="submit">Masuk dan lanjut</button>
+    </form>
+  </section>
+
+  <section id="vToko" class="card" hidden>
+    <h1>Data toko</h1>
+    <p class="muted" style="margin:6px 0 16px">Langkah 2 dari 2. Semua bisa diubah lagi nanti, kecuali alamat link.</p>
+    <form id="fToko" novalidate>
+      <label>Nama toko<input name="name" required minlength="2" maxlength="60" placeholder="Contoh: Warung Bu Sri"></label>
+      <label for="slug">Alamat link toko</label>
+      <div class="slug-row"><span id="slugPre">bhatra.id/?toko=</span><input id="slug" name="slug" required maxlength="30" autocapitalize="none" autocomplete="off" spellcheck="false" placeholder="warung-bu-sri"></div>
+      <p class="hint" id="slugHint"></p>
+      <label>Nomor WhatsApp toko<input name="wa" type="tel" inputmode="tel" required placeholder="08xxxxxxxxxx"></label>
+      <p class="err" id="eToko" hidden></p>
+      <button class="btn btn-red" type="submit" id="bToko">Buat toko</button>
+    </form>
+  </section>
+
+  <section id="vSelesai" class="card" hidden>
+    <h1>Toko sudah jadi</h1>
+    <p style="margin:8px 0">Link toko kamu:</p>
+    <p style="font-weight:800;word-break:break-all" id="doneLink"></p>
+    <p class="muted" style="font-size:14px;margin:8px 0 16px">Langkah berikutnya di dashboard: isi menu, pasang lokasi & jam buka, lalu unggah QRIS kalau ada.</p>
+    <a class="btn btn-red" id="toDash" href="/owner/">Buka dashboard</a>
+  </section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="daftar/daftar.js"></script>
+</body>
+</html>
