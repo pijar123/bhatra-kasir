@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Syarat Layanan</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap">
+<link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="platform.css">
+</head>
+<body>
+<main class="lp legal">
+  <p class="eyebrow" style="margin-top:24px"><a href="/home.html" data-brand>Dapurin</a></p>
+  <h1>Syarat Layanan</h1>
+  <p class="muted">Berlaku sejak: [tanggal mulai dijual]</p>
+
+  <p>Dengan mendaftar sebagai Penjual atau memesan di toko yang memakai <b data-brand>Dapurin</b>, kamu menyetujui syarat berikut.</p>
+
+  <h2>1. Layanan</h2>
+  <p>Kami menyediakan halaman toko online, dashboard pesanan, dan aplikasi Kasir pendamping. Kami bukan penjual makanan dan bukan pihak dalam transaksi antara Penjual dan Pembeli. Kami tidak menerima, menyimpan, atau menyalurkan uang pembayaran pesanan; pembayaran langsung masuk ke QRIS atau kas milik Penjual.</p>
+
+  <h2>2. Akun Penjual</h2>
+  <ul>
+    <li>Penjual minimal berusia 18 tahun dan memberikan data yang benar.</li>
+    <li>Penjual menjaga kerahasiaan password dan bertanggung jawab atas aktivitas di akunnya.</li>
+    <li>Satu akun boleh mengelola paling banyak 3 toko.</li>
+  </ul>
+
+  <h2>3. Masa coba dan langganan</h2>
+  <ul>
+    <li>Toko baru mendapat masa coba gratis 14 hari dengan fitur paket Pro.</li>
+    <li>Setelah masa coba, layanan berlanjut dengan langganan bulanan atau tahunan sesuai harga yang tertera di situs. Tidak ada potongan per pesanan.</li>
+    <li>Langganan dibayar di muka. Bila tidak diperpanjang, toko masih menerima pesanan 3 hari, lalu pesan online dinonaktifkan; data tetap disimpan sesuai Kebijakan Privasi.</li>
+    <li>Biaya yang sudah dibayar tidak dikembalikan, kecuali layanan tidak bisa dipakai lebih dari 3 hari berturut-turut karena kesalahan kami.</li>
+    <li>Perubahan harga diberitahukan paling lambat 30 hari sebelumnya dan tidak berlaku untuk periode yang sudah dibayar.</li>
+  </ul>
+
+  <h2>4. Kewajiban Penjual</h2>
+  <ul>
+    <li>Bertanggung jawab atas produk, harga, kebersihan, perizinan usaha, pengantaran, dan pelayanan kepada Pembeli.</li>
+    <li>Memakai data Pembeli hanya untuk memproses pesanan dan tidak menyebarkannya.</li>
+    <li>Tidak menjual barang atau jasa yang dilarang hukum di Indonesia.</li>
+    <li>Memastikan QRIS yang diunggah adalah milik usaha sendiri.</li>
+  </ul>
+
+  <h2>5. QRIS lunas otomatis</h2>
+  <p>Fitur ini membaca notifikasi pembayaran di HP kasir dan bisa terlewat bila HP mati, tanpa sinyal, dibatasi hemat baterai, atau format notifikasi berubah. Penjual tetap wajib memeriksa uang masuk di aplikasi pembayarannya sebelum menyerahkan pesanan. Kami tidak bertanggung jawab atas kerugian karena status lunas yang tidak sesuai.</p>
+
+  <h2>6. Ketersediaan layanan</h2>
+  <p>Kami berusaha menjaga layanan berjalan setiap saat, tetapi gangguan bisa terjadi karena pemeliharaan atau penyedia pihak ketiga. Kami akan memberi tahu gangguan terencana lebih dulu bila memungkinkan.</p>
+
+  <h2>7. Batas tanggung jawab</h2>
+  <p>Sejauh diizinkan hukum, tanggung jawab kami atas kerugian yang timbul dari pemakaian layanan paling banyak sebesar biaya langganan yang dibayar Penjual dalam 3 bulan terakhir.</p>
+
+  <h2>8. Penghentian</h2>
+  <p>Penjual bisa berhenti kapan saja dengan tidak memperpanjang langganan atau meminta penghapusan akun. Kami boleh menonaktifkan toko yang melanggar syarat ini setelah memberi peringatan, atau langsung bila ada pelanggaran hukum yang serius.</p>
+
+  <h2>9. Hukum yang berlaku</h2>
+  <p>Syarat ini tunduk pada hukum Republik Indonesia. Perselisihan diselesaikan dengan musyawarah lebih dulu.</p>
+
+  <h2>10. Kontak</h2>
+  <p>WhatsApp <a id="waAdmin" href="#"></a>.</p>
+</main>
+<footer><p><a href="/home.html" data-brand>Dapurin</a> · <a href="/privasi.html">Kebijakan Privasi</a></p></footer>
+<script src="config.js"></script>
+<script>
+  document.querySelectorAll('[data-brand]').forEach(e => e.textContent = CONFIG.BRAND);
+  const w = document.getElementById('waAdmin'); w.href = 'https://wa.me/' + CONFIG.ADMIN_WA; w.textContent = '0' + CONFIG.ADMIN_WA.slice(2);
+</script>
+</body>
+</html>

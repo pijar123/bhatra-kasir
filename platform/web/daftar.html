@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Buka toko online</title>
+<meta name="theme-color" content="#C8372D">
+<link rel="icon" href="img/icon.svg">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap">
+<link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="platform.css">
+</head>
+<body>
+<main class="wrap" style="max-width:480px">
+  <p class="eyebrow" style="margin-top:28px"><a href="/home.html" id="brandHome"></a></p>
+
+  <section id="stepAkun" class="card" hidden>
+    <p class="stepno">Langkah 1 dari 2</p>
+    <h1>Buka toko online, gratis 14 hari</h1>
+    <p class="muted">Tanpa kartu kredit, tanpa potongan per pesanan. Setelah masa coba, mulai <b id="hargaDasar"></b>/bulan.</p>
+    <form id="akunForm" novalidate>
+      <label>Email<input name="email" type="email" autocomplete="email" required></label>
+      <label>Buat password<input name="password" type="password" autocomplete="new-password" minlength="8" required placeholder="Minimal 8 karakter"></label>
+      <label class="opt"><input type="checkbox" name="agree" required><span><small style="font-size:14px">Saya setuju dengan <a href="/syarat.html" target="_blank">Syarat Layanan</a> dan <a href="/privasi.html" target="_blank">Kebijakan Privasi</a>.</small></span></label>
+      <p class="err" id="akunErr" hidden></p>
+      <button class="btn btn-red" type="submit">Lanjut</button>
+    </form>
+    <p style="margin:14px 0 0">Sudah punya akun? <a href="/owner/" style="font-weight:800">Masuk</a></p>
+  </section>
+
+  <section id="stepCek" class="card" hidden>
+    <h1>Cek email kamu</h1>
+    <p>Kami mengirim link konfirmasi ke <b id="cekEmail"></b>. Buka link itu, lalu kamu langsung lanjut ke langkah membuat toko.</p>
+    <p class="muted" style="font-size:14px">Tidak ada di kotak masuk? Cek folder Spam atau Promosi.</p>
+  </section>
+
+  <section id="stepToko" class="card" hidden>
+    <p class="stepno">Langkah 2 dari 2</p>
+    <h1>Data toko</h1>
+    <form id="tokoForm" novalidate>
+      <label>Nama toko<input name="name" required maxlength="60" placeholder="Contoh: Warung Bu Siti"></label>
+      <label>Link toko
+        <span class="slugrow"><input name="slug" required maxlength="30" autocapitalize="none" autocomplete="off" spellcheck="false" placeholder="warungbusiti"><span class="suffix" id="slugSuffix"></span></span>
+        <small class="muted" id="slugMsg" style="font-weight:600">Huruf kecil, angka, dan tanda minus.</small>
+      </label>
+      <label>Nomor WhatsApp toko<input name="wa" type="tel" inputmode="tel" required placeholder="0812xxxxxxxx"></label>
+      <p class="err" id="tokoErr" hidden></p>
+      <button class="btn btn-red" type="submit">Buat toko</button>
+    </form>
+  </section>
+
+  <section id="stepPass" class="card" hidden>
+    <h1>Buat password baru</h1>
+    <form id="passForm">
+      <label>Password baru<input name="password" type="password" autocomplete="new-password" minlength="8" required></label>
+      <p class="err" id="passErr" hidden></p>
+      <button class="btn btn-red" type="submit">Simpan password</button>
+    </form>
+  </section>
+</main>
+<footer><p><a href="/home.html">Tentang</a> · <a href="/privasi.html">Privasi</a> · <a href="/syarat.html">Syarat</a></p></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<script src="daftar.js"></script>
+</body>
+</html>

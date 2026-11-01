@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Kebijakan Privasi</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap">
+<link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="platform.css">
+</head>
+<body>
+<main class="lp legal">
+  <p class="eyebrow" style="margin-top:24px"><a href="/home.html" data-brand>Dapurin</a></p>
+  <h1>Kebijakan Privasi</h1>
+  <p class="muted">Berlaku sejak: <span id="berlaku">[tanggal mulai dijual]</span></p>
+
+  <p><b data-brand>Dapurin</b> ("kami") menyediakan layanan toko online untuk warung dan usaha kecil ("Penjual"), yang dipakai oleh pembeli untuk memesan ("Pembeli"). Kebijakan ini menjelaskan data apa yang kami kumpulkan, untuk apa, dan hak kamu atas data tersebut, sesuai Undang-Undang Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi.</p>
+
+  <h2>1. Peran kami</h2>
+  <p>Untuk data akun Penjual, kami adalah pengendali data. Untuk data Pembeli di sebuah toko, Penjual adalah pengendali data dan kami memproses data itu atas nama Penjual, hanya untuk menjalankan layanan.</p>
+
+  <h2>2. Data yang kami kumpulkan</h2>
+  <ul>
+    <li><b>Penjual:</b> email, password (tersimpan dalam bentuk terenkripsi), nama toko, nomor WhatsApp, alamat, lokasi toko, logo, menu, QRIS statis toko, dan catatan pembayaran langganan.</li>
+    <li><b>Pembeli:</b> nama, nomor WhatsApp, alamat atau patokan, titik lokasi antar (jika memilih diantar), isi pesanan, catatan, dan cara bayar.</li>
+    <li><b>Aplikasi Kasir (Android, opsional):</b> isi notifikasi pembayaran dari aplikasi DANA di HP kasir, hanya yang memuat nominal uang masuk, untuk mencocokkan pembayaran QRIS. Notifikasi aplikasi lain tidak dikirim.</li>
+    <li><b>Teknis:</b> data yang tersimpan di HP kamu sendiri (keranjang, nama dan alamat terakhir) agar formulir terisi otomatis, serta catatan teknis server untuk keamanan.</li>
+  </ul>
+
+  <h2>3. Untuk apa data dipakai</h2>
+  <ul>
+    <li>Meneruskan pesanan dari Pembeli ke Penjual, menghitung ongkir, dan menampilkan status pesanan.</li>
+    <li>Menandai pembayaran QRIS yang sudah masuk.</li>
+    <li>Mengirim pemberitahuan pesanan baru ke perangkat Penjual.</li>
+    <li>Mengelola akun dan langganan Penjual, serta mencegah penyalahgunaan (misalnya pesanan palsu).</li>
+  </ul>
+  <p>Kami tidak menjual data, tidak memakainya untuk iklan, dan tidak menghubungi Pembeli untuk kepentingan kami sendiri.</p>
+
+  <h2>4. Pihak lain yang terlibat</h2>
+  <ul>
+    <li><b>Supabase</b> sebagai penyedia basis data dan server.</li>
+    <li><b>Penyedia hosting website</b> tempat halaman toko disajikan.</li>
+    <li><b>OpenStreetMap</b> (peta) dan <b>OSRM</b> (penghitung jarak rute): titik lokasi antar dikirim ke layanan ini untuk menghitung jarak.</li>
+    <li><b>WhatsApp</b>, hanya bila kamu sendiri menekan tombol untuk mengirim pesan.</li>
+    <li><b>Layanan notifikasi browser</b> (Google, Apple, Mozilla) untuk pemberitahuan pesanan ke perangkat Penjual.</li>
+  </ul>
+  <p>Sebagian penyedia ini menyimpan data di luar Indonesia. Kami memilih penyedia dengan standar keamanan yang memadai.</p>
+
+  <h2>5. Berapa lama data disimpan</h2>
+  <p>Data pesanan disimpan selama toko aktif agar Penjual bisa melihat rekap. Data toko dan pesanan dihapus paling lambat 90 hari setelah Penjual meminta penghapusan akun. Catatan pembayaran langganan bisa disimpan lebih lama bila diwajibkan aturan perpajakan.</p>
+
+  <h2>6. Hak kamu</h2>
+  <p>Kamu berhak meminta salinan, memperbaiki, atau menghapus data pribadi kamu, serta menarik persetujuan. Pembeli dapat mengajukannya ke Penjual toko terkait atau langsung ke kami; kami akan meneruskannya ke Penjual. Kami menjawab paling lambat 3 x 24 jam hari kerja.</p>
+
+  <h2>7. Keamanan</h2>
+  <p>Data setiap toko dipisahkan dengan aturan akses di basis data, sehingga satu Penjual tidak bisa melihat data toko lain. Koneksi memakai HTTPS. Bila terjadi kebocoran data, kami memberi tahu Penjual dan pihak terdampak sesuai ketentuan undang-undang.</p>
+
+  <h2>8. Anak-anak</h2>
+  <p>Layanan untuk Penjual ditujukan bagi orang dewasa. Pembeli di bawah 18 tahun sebaiknya memesan dengan sepengetahuan orang tua atau wali.</p>
+
+  <h2>9. Kontak</h2>
+  <p>Pertanyaan atau permintaan terkait data pribadi: WhatsApp <a id="waAdmin" href="#"></a>.</p>
+
+  <h2>10. Perubahan</h2>
+  <p>Bila kebijakan ini berubah, kami mengumumkannya di halaman ini dan di dashboard Penjual sebelum berlaku.</p>
+</main>
+<footer><p><a href="/home.html" data-brand>Dapurin</a> · <a href="/syarat.html">Syarat Layanan</a></p></footer>
+<script src="config.js"></script>
+<script>
+  document.querySelectorAll('[data-brand]').forEach(e => e.textContent = CONFIG.BRAND);
+  const w = document.getElementById('waAdmin'); w.href = 'https://wa.me/' + CONFIG.ADMIN_WA; w.textContent = '0' + CONFIG.ADMIN_WA.slice(2);
+</script>
+</body>
+</html>
