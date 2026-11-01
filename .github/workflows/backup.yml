@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 jobs:
   backup:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Cek secret
         env: { DB: "${{ secrets.SUPABASE_DB_URL }}", PW: "${{ secrets.BACKUP_PASSWORD }}" }
