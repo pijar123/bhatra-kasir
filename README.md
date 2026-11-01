@@ -70,7 +70,7 @@ Ganti `PRODUCT` dan `ROOT_DOMAIN` setelah nama produk diputuskan.
 
 - **Backup harian 02.23 WIB** (`.github/workflows/backup.yml`): dump skema public+auth, dienkripsi AES-256, disimpan 30 hari di tab Actions.
   Perlu 2 secret di GitHub (Settings → Secrets and variables → Actions):
-  - `SUPABASE_DB_URL`: dari Supabase → Connect → **Session pooler**. Ganti `[YOUR-PASSWORD]` dengan password database.
+  - `DB_PASSWORD`: password database Supabase (Project Settings → Database → Reset database password → Generate).
   - `BACKUP_PASSWORD`: kata sandi panjang buatan sendiri. Simpan di tempat aman, karena tanpa ini backup tidak bisa dibuka.
 
   Foto banner/logo di Storage tidak ikut backup.
