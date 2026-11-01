@@ -1,8 +1,9 @@
 name: Backup database harian
 # Salin database Supabase (skema public + auth) tiap malam, dienkripsi, disimpan 30 hari sebagai artifact.
 # Repo ini publik, jadi file WAJIB terenkripsi. Butuh 2 secret:
-#   SUPABASE_DB_URL  : Supabase → Connect → Session pooler (postgresql://postgres.xxx:PASSWORD@aws-...pooler.supabase.com:5432/postgres)
-#   BACKUP_PASSWORD  : kata sandi bebas yang panjang; simpan di tempat aman, tanpa ini backup tidak bisa dibuka.
+#   DB_PASSWORD      : password database Supabase saja (Project Settings → Database → Reset database password)
+#   BACKUP_PASSWORD  : kata sandi bebas min. 16 karakter; simpan di tempat aman, tanpa ini backup tidak bisa dibuka.
+# (Cara lama SUPABASE_DB_URL berisi alamat lengkap tetap didukung.)
 # Cara memulihkan: lihat RESTORE di bawah.
 on:
   schedule:
@@ -13,9 +14,9 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Cek secret
-        env: { DB: "${{ secrets.SUPABASE_DB_URL }}", PW: "${{ secrets.BACKUP_PASSWORD }}" }
+        env: { DB: "${{ secrets.SUPABASE_DB_URL }}", DBPW: "${{ secrets.DB_PASSWORD }}", PW: "${{ secrets.BACKUP_PASSWORD }}" }
         run: |
-          if [ -z "$DB" ] || [ -z "$PW" ]; then echo "::error::Secret SUPABASE_DB_URL / BACKUP_PASSWORD belum diisi (Settings → Secrets and variables → Actions)"; exit 1; fi
+          if [ -z "$DB$DBPW" ] || [ -z "$PW" ]; then echo "::error::Secret DB_PASSWORD / BACKUP_PASSWORD belum diisi (Settings → Secrets and variables → Actions)"; exit 1; fi
           if [ ${#PW} -lt 16 ]; then echo "::error::BACKUP_PASSWORD minimal 16 karakter"; exit 1; fi
       - name: Pasang pg_dump 17
         run: |
@@ -24,9 +25,14 @@ jobs:
           echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list >/dev/null
           sudo apt-get -qq update && sudo apt-get -qq install -y postgresql-client-17 >/dev/null
       - name: Dump + enkripsi
-        env: { DB: "${{ secrets.SUPABASE_DB_URL }}", BACKUP_PASSWORD: "${{ secrets.BACKUP_PASSWORD }}" }
+        env:
+          DB: ${{ secrets.SUPABASE_DB_URL }}
+          PGPASSWORD: ${{ secrets.DB_PASSWORD }}
+          BACKUP_PASSWORD: ${{ secrets.BACKUP_PASSWORD }}
         run: |
           set -o pipefail
+          # Pakai DB_PASSWORD (alamat tetap di bawah) kalau ada; kalau tidak, pakai SUPABASE_DB_URL.
+          if [ -n "$PGPASSWORD" ]; then DB="postgresql://postgres.wtmzvxmghlwukjwfvpmp@aws-1-eu-west-3.pooler.supabase.com:5432/postgres?sslmode=require"; fi
           F=backup-$(TZ=Asia/Jakarta date +%Y%m%d-%H%M).sql.gz.enc
           /usr/lib/postgresql/17/bin/pg_dump "$DB" --schema=public --schema=auth --no-owner --no-privileges \
             | gzip -9 | openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt -pass env:BACKUP_PASSWORD -out "$F"
