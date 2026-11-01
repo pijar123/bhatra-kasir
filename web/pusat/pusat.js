@@ -23,9 +23,10 @@ $('loginForm').addEventListener('submit', async e => {
 $('logout').onclick = async () => { await sb.auth.signOut(); location.reload(); };
 
 function render() {
-  const paid = ROWS.filter(r => r.plan !== 'trial' && r.active), trial = ROWS.filter(r => r.plan === 'trial' && r.active);
+  const free = r => r.paid_until && new Date(r.paid_until).getFullYear() >= 2090;
+  const paid = ROWS.filter(r => r.plan !== 'trial' && r.active && !free(r)), trial = ROWS.filter(r => r.plan === 'trial' && r.active);
   const mrr = paid.reduce((a, r) => a + (CONFIG.PRICES[r.plan] || 0), 0);
-  $('sum').innerHTML = `<div><p>Toko</p><b>${ROWS.length}</b></div><div><p>Masa coba aktif</p><b>${trial.length}</b></div><div><p>Berbayar aktif</p><b>${paid.length}</b></div><div><p>Pendapatan / bulan</p><b>${rp(mrr)}</b></div>`;
+  $('sum').innerHTML = `<div><p>Toko</p><b>${ROWS.length}</b></div><div><p>Masa coba aktif</p><b>${trial.length}</b></div><div><p>Berbayar aktif</p><b>${paid.length}</b></div><div><p>Pendapatan / bulan${ROWS.some(free) ? ' (tanpa toko gratis)' : ''}</p><b>${rp(mrr)}</b></div>`;
   const L = ROWS.filter(r => F === 'semua' || (F === 'coba' && r.plan === 'trial' && r.active) || (F === 'bayar' && r.plan !== 'trial' && r.active) || (F === 'mati' && !r.active));
   $('list').innerHTML = L.length ? L.map(card).join('') : '<p class="empty">Tidak ada toko di sini.</p>';
 }

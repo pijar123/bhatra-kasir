@@ -67,3 +67,14 @@ Atur paket di `/pusat/`. Pemilik toko tidak bisa mengubah paketnya sendiri karen
 ```
 bash supabase/tests/jalankan.sh     # perlu PostgreSQL 16 lokal
 ```
+
+## Uji ujung-ke-ujung (browser)
+
+Menguji pembeli memesan, dashboard pemilik, pendaftaran toko baru, isolasi antar toko, admin pusat, dan tampilan HP (31 uji).
+Perlu PostgreSQL 16 lokal, [PostgREST](https://github.com/PostgREST/postgrest/releases) dan Playwright.
+
+```
+bash e2e/setup.sh                 # database e2e + PostgREST :3001
+node e2e/server.js &              # situs + tiruan Supabase di :8080
+node e2e/uji.js                   # SEMUA 31 UJI LULUS
+```
