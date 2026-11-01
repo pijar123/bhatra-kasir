@@ -1,0 +1,32 @@
+name: Pantau sistem
+# Tiap jam (06.41–22.41 WIB): cek situs & database. Kalau gagal, GitHub mengirim email ke pemilik repo.
+# Sekaligus menjaga database Supabase gratis tetap aktif (pengganti keepalive).
+on:
+  schedule:
+    - cron: "41 23,0-15 * * *"
+  workflow_dispatch:
+env:
+  SB: https://wtmzvxmghlwukjwfvpmp.supabase.co
+  KEY: sb_publishable_HnF1K96NVO6zV6SiKpy7qw_8lu9rRfL
+  SITE: https://bhatra.id/
+jobs:
+  cek:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Situs bisa dibuka
+        run: |
+          for i in 1 2 3; do code=$(curl -s -o /dev/null -w "%{http_code}" -A "Mozilla/5.0 (pantau)" "$SITE"); [ "$code" = 200 ] && break; sleep 20; done
+          echo "HTTP $code"; [ "$code" = 200 ] || { echo "::error::$SITE tidak bisa dibuka (HTTP $code)"; exit 1; }
+      - name: Database & HP kasir
+        run: |
+          code=$(curl -s -o h.json -w "%{http_code}" -X POST "$SB/rest/v1/rpc/health" -H "apikey: $KEY" -H "Content-Type: application/json" -d '{}')
+          if [ "$code" = 404 ]; then
+            # Versi lama (sebelum migrasi 003): cukup baca 1 baris
+            code=$(curl -s -o /dev/null -w "%{http_code}" "$SB/rest/v1/settings?select=id&limit=1" -H "apikey: $KEY"); echo "versi lama, HTTP $code"
+            [ "$code" = 200 ] || { echo "::error::Database tidak menjawab (HTTP $code)"; exit 1; }; exit 0
+          fi
+          echo "HTTP $code"; cat h.json; echo
+          [ "$code" = 200 ] || { echo "::error::Database tidak menjawab (HTTP $code)"; exit 1; }
+          mati=$(jq -r '.kasir_mati | join(", ")' h.json); err=$(jq -r '.error_1jam' h.json)
+          [ -z "$mati" ] || { echo "::error::HP kasir tidak lapor >60 menit: $mati. Cek HP kasir (sinyal, baterai, aplikasi BHATRA Kasir)."; exit 1; }
+          [ "$err" -le 20 ] || { echo "::error::$err error JavaScript dalam 1 jam terakhir. Lihat /pusat/."; exit 1; }
