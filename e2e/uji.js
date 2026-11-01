@@ -114,6 +114,41 @@ async function halaman(b) {
   cek('pemilik biasa ditolak di pusat', await pg.isHidden('#appView'));
   await pg.context().close();
 
+  console.log('7. Tampilan toko');
+  pg = await halaman(b);
+  await pg.goto(B + '/owner/');
+  await pg.fill('input[type=email]', 'istri@contoh.id'); await pg.fill('input[type=password]', 'rahasia123');
+  await pg.click('form button[type=submit]'); await pg.waitForTimeout(2000);
+  await pg.click('.tabs [data-tab="atur"]'); await pg.waitForSelector('[data-theme-pick="segar"]');
+  await pg.click('[data-theme-pick="segar"]'); await pg.waitForTimeout(1200);
+  cek('pemilik memilih tema Segar', sql("select theme->>'preset' from shops where slug='bhatra'") === 'segar');
+  cek('pemilik Pro melihat pilihan warna', await pg.isVisible('#thColor'));
+  await pg.locator('#themeBox').screenshot({ path: SHOT + '/7-pilih-tema.png' });
+  cek('tanpa error JS (tema owner)', !pg.errs.length, pg.errs.join(' | '));
+  await pg.goto(B + '/?toko=bhatra'); await pg.waitForSelector('[data-add]'); await pg.waitForTimeout(500);
+  const merah = await pg.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--red').trim());
+  cek('halaman pembeli memakai warna tema', merah.toUpperCase() === '#2E8B57', merah);
+  await pg.context().close();
+
+  pg = await halaman(b);
+  await pg.goto(B + '/pusat/');
+  await pg.fill('#loginForm [name=email]', 'admin@contoh.id'); await pg.fill('#loginForm [name=password]', 'rahasia123');
+  await pg.click('#loginForm button'); await pg.waitForSelector('#appView:not([hidden])');
+  await pg.locator('article', { hasText: 'Warung Bu Sri' }).locator('[data-design]').click();
+  await pg.waitForSelector('#dzCss');
+  await pg.selectOption('#dzPreset', 'kopi');
+  await pg.fill('#dzCss', '.hero{outline:3px solid rgb(1, 2, 3)}');
+  await pg.waitForTimeout(1500);
+  const pv = await pg.frameLocator('#dzFrame').locator('.hero').evaluate(e => getComputedStyle(e).outlineColor);
+  cek('pratinjau langsung di pusat', pv === 'rgb(1, 2, 3)', pv);
+  await pg.screenshot({ path: SHOT + '/7-desain-pusat.png' });
+  await pg.click('#dzSave'); await pg.waitForTimeout(1200);
+  cek('desain khusus tersimpan', sql(`select design->>'css' from shops where id='${sid}'`).includes('rgb(1, 2, 3)'));
+  cek('tanpa error JS (desain pusat)', !pg.errs.length, pg.errs.join(' | '));
+  await pg.goto(B + '/?toko=warung-bu-sri'); await pg.waitForSelector('[data-add]'); await pg.waitForTimeout(500);
+  cek('desain khusus tampil di toko', await pg.locator('.hero').evaluate(e => getComputedStyle(e).outlineColor) === 'rgb(1, 2, 3)');
+  await pg.context().close();
+
   console.log('6. Halaman produk dan legal');
   pg = await halaman(b);
   for (const p of ['/produk/', '/legal/syarat.html', '/legal/privasi.html', '/']) {

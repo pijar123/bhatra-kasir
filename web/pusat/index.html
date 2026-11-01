@@ -20,6 +20,15 @@
   .shop h3 small{font:600 13px var(--fb);color:var(--muted)}
   .meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted);margin:6px 0}
   .filters{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .dz{width:min(1100px,100vw - 16px);max-height:calc(100dvh - 16px);border:2px solid var(--ink);border-radius:20px;padding:16px;background:var(--cream);color:var(--ink)}
+  .dz::backdrop{background:rgba(58,30,18,.5)}
+  .dz-grid{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:16px;align-items:start}
+  .dz-grid iframe{width:100%;height:min(720px,80dvh);border:2px solid var(--ink);border-radius:18px;background:#fff}
+  .dz select{width:100%;min-height:48px;border:1.5px solid var(--line);border-radius:14px;padding:0 12px;background:#fff;margin-top:6px;font-weight:600}
+  .dz .check{display:flex;gap:10px;align-items:center;font-weight:700;margin:12px 0}
+  .dz .check input[type=checkbox]{width:20px;height:20px;margin:0;flex:none;accent-color:var(--red)}
+  .dz .check input[type=color]{width:56px;height:38px;padding:2px;margin:0;flex:none;border-radius:10px}
+  @media (max-width:820px){.dz-grid{grid-template-columns:1fr}.dz-grid iframe{height:560px}}
 </style>
 </head>
 <body>
@@ -49,6 +58,8 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
+<script src="themes.js"></script>
 <script src="pusat/pusat.js"></script>
+<dialog id="dzDialog" class="dz"><div id="dzBody"></div></dialog>
 </body>
 </html>

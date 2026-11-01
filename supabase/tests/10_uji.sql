@@ -116,5 +116,26 @@ select pg_temp.as_user(null);
 select pg_temp.ok((resolve_shop(null, 'warung-uji'))->>'active' = 'true' and (resolve_shop(null, 'warung-uji'))->>'pro' = 'false',
   'paket Dasar aktif tetapi tanpa fitur Pro');
 select pg_temp.ok((check_voucher((select id from shops where slug = 'bhatra'), 'hemat5', 20000))->>'ok' = 'true', 'kode promo BHATRA berlaku');
+-- 8. Tampilan (002): paket Dasar hanya menyimpan preset; desain khusus hanya admin.
+select pg_temp.as_user('22222222-2222-4222-8222-222222222222');
+update shops set theme = '{"preset":"segar","primary":"#123456","font":"bulat"}', design = '{"css":"body{}"}' where slug = 'warung-uji';
+select pg_temp.su();
+select pg_temp.ok((select theme = '{"preset":"segar"}' and design = '{}' from shops where slug = 'warung-uji'),
+  'pemilik Dasar: warna/huruf dibuang, desain khusus tidak bisa diubah');
+select pg_temp.as_user('22222222-2222-4222-8222-222222222222');
+do $$ begin perform admin_update_design((select id from shops where slug = 'warung-uji'), '{"css":"x"}');
+  raise exception 'GAGAL: pemilik bisa memanggil admin_update_design';
+exception when raise_exception then if sqlerrm like 'GAGAL%' then raise; end if; raise notice 'lulus: desain khusus hanya admin'; end $$;
+select pg_temp.as_user('11111111-1111-4111-8111-111111111111');
+select admin_update_design((select id from shops where slug = 'warung-uji'), '{"css":".hero{border-radius:0}","hero_img":"https://contoh.id/a.webp"}', '{"preset":"kopi","font":"klasik"}');
+select pg_temp.as_user(null);
+select pg_temp.ok((resolve_shop(null, 'warung-uji'))->'design'->>'css' = '.hero{border-radius:0}' and (resolve_shop(null, 'warung-uji'))->'theme'->>'font' = 'klasik',
+  'admin pusat menyimpan desain khusus, terbaca di halaman toko');
+select pg_temp.su();
+delete from platform_admins where user_id = '11111111-1111-4111-8111-111111111111';
+select pg_temp.as_user('11111111-1111-4111-8111-111111111111');
+update shops set theme = '{"preset":"manis","primary":"#D6457A"}', design = '{"css":"x"}' where slug = 'bhatra';
+select pg_temp.su();
+select pg_temp.ok((select theme->>'primary' = '#D6457A' and design = '{}' from shops where slug = 'bhatra'), 'pemilik Pro boleh warna sendiri, tetap tidak bisa ubah desain khusus');
 select pg_temp.su();
 select 'SEMUA UJI LULUS' as hasil;

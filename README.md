@@ -23,7 +23,7 @@ v1/                  salinan situs bhatra.id saat ini, untuk cadangan
 Lakukan saat warung sepi, misalnya malam setelah tutup. Halaman lama tidak cocok dengan database baru, jadi langkah 2 dan 3 harus berdekatan.
 
 1. **Cadangan.** Di Supabase pilih Database lalu Backups. Di Hostinger, unduh isi `public_html`.
-2. **Migrasi database.** Di Supabase buka SQL Editor, tempel seluruh isi `supabase/migrations/001_banyak_warung.sql`, lalu Run. Hasil yang diharapkan: "Success. No rows returned".
+2. **Migrasi database.** Di Supabase buka SQL Editor, tempel seluruh isi `supabase/migrations/001_banyak_warung.sql`, lalu Run. Ulangi untuk `002_tampilan.sql`. Hasil yang diharapkan: "Success. No rows returned".
 3. **Unggah situs.** Ganti isi `public_html` dengan isi folder `web/`, termasuk `.htaccess`.
 4. **Admin pusat.** Di SQL Editor jalankan:
    ```sql
@@ -57,6 +57,15 @@ Unggah kembali `v1/` ke `public_html`. Database v2 tetap bisa dibaca v1 untuk me
 
 Ganti `PRODUCT` dan `ROOT_DOMAIN` setelah nama produk diputuskan.
 
+## Tampilan per toko (migrasi 002)
+
+- **Pemilik** memilih satu dari 8 tema di dashboard (Atur → Tampilan toko): Hangat, Segar, Kopi, Manis, Laut, Pedas, Malam, Polos.
+  Paket Pro dan masa coba juga bisa memilih warna utama (ada tombol ambil warna dari logo), jenis huruf, dan pola latar.
+- **Admin pusat** mengatur desain khusus di `/pusat/` lewat tombol *Desain khusus* pada kartu toko. Pilihannya: tema, warna, huruf, gambar hero, dan CSS tambahan, dengan pratinjau langsung.
+  Ini untuk jasa desain berbayar. Pemilik toko tidak bisa mengubah bagian ini.
+- Daftar tema ada di `web/themes.js`. Untuk menambah tema, cukup tambah satu entri.
+- Jalankan `002_tampilan.sql` setelah `001` (aman dijalankan ulang).
+
 ## Paket
 
 Masa coba dan Pro mendapat semua fitur. Dasar tidak mendapat promo/voucher, harga coret, stok harian, banner, lunas otomatis via HP kasir, notifikasi kasir, dan rekap lebih dari 1 hari.
@@ -70,11 +79,11 @@ bash supabase/tests/jalankan.sh     # perlu PostgreSQL 16 lokal
 
 ## Uji ujung-ke-ujung (browser)
 
-Menguji pembeli memesan, dashboard pemilik, pendaftaran toko baru, isolasi antar toko, admin pusat, dan tampilan HP (31 uji).
+Menguji pembeli memesan, dashboard pemilik, pendaftaran toko baru, isolasi antar toko, admin pusat, dan tampilan HP (39 uji).
 Perlu PostgreSQL 16 lokal, [PostgREST](https://github.com/PostgREST/postgrest/releases) dan Playwright.
 
 ```
 bash e2e/setup.sh                 # database e2e + PostgREST :3001
 node e2e/server.js &              # situs + tiruan Supabase di :8080
-node e2e/uji.js                   # SEMUA 31 UJI LULUS
+node e2e/uji.js                   # SEMUA 39 UJI LULUS
 ```

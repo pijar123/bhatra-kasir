@@ -1,5 +1,5 @@
-const CACHE = 'warung-v7';
-const SHELL = ['/', '/index.html', '/app.css', '/shop.js', '/qris.js', '/config.js', '/install.js', '/img/toko-192.png'];
+const CACHE = 'warung-v8';
+const SHELL = ['/', '/index.html', '/app.css', '/shop.js', '/qris.js', '/themes.js', '/config.js', '/install.js', '/img/toko-192.png'];
 self.addEventListener('install', e => { self.skipWaiting(); e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).catch(() => {})); });
 self.addEventListener('activate', e => e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())));
 // Selalu ambil versi terbaru dari internet; pakai cache hanya saat offline.

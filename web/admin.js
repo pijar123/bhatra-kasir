@@ -303,6 +303,7 @@ function aturHTML() {
     <button class="btn btn-red" type="submit">Simpan pengaturan</button>
   </form>
   ${profileHTML()}
+  ${themeHTML()}
   ${qrisHTML()}
   ${pushHTML()}
   ${payHTML()}
@@ -362,6 +363,9 @@ function struk(o) {
 }
 $('panel').addEventListener('click', e => {
   const gt = e.target.closest('[data-goto]'); if (gt) { document.querySelector(`.tabs [data-tab="${gt.dataset.goto}"]`)?.click(); return; }
+  const tp = e.target.closest('[data-theme-pick]'); if (tp) { saveTheme({ preset: tp.dataset.themePick }); return; }
+  const ts = e.target.closest('[data-theme-set]'); if (ts) { const [k, v] = ts.dataset.themeSet.split('|'); saveTheme({ [k]: v }); return; }
+  if (e.target.closest('[data-theme-logo]')) { logoColor().then(c => c ? saveTheme({ primary: c }) : toast('Warna logo tidak terbaca')).catch(() => toast('Warna logo tidak terbaca')); return; }
   if (e.target.closest('[data-onb-x]')) { store.set('onb_x_' + SET.id, '1'); return render(); }
   if (e.target.closest('[data-share]')) store.set('shared_' + SET.id, '1');
   if (e.target.closest('[data-logo-del]')) { (async () => { await sb.from('shops').update({ logo_url: null }).eq('id', SET.id); await loadSettings(); render(); })(); return; }
@@ -463,6 +467,7 @@ $('panel').addEventListener('submit', async e => {
 $('panel').addEventListener('change', async e => {
   if (e.target.id === 'bnFile') return addBanner(e.target);
   if (e.target.id === 'logoFile') return uploadLogo(e.target);
+  if (e.target.id === 'thColor') return saveTheme({ primary: e.target.value });
   if (e.target.id === 'qrisFile') return readQris(e.target);
   if (e.target.dataset.vact) { const { error } = await sb.from('vouchers').update({ active: e.target.checked }).eq('shop_id', SET.id).eq('code', e.target.dataset.vact); if (error) alert(error.message); await loadMenu(); return; }
   if (e.target.name === 'full24') { $('hoursRow').hidden = e.target.checked; $('hoursHint').hidden = e.target.checked; return; }
@@ -501,6 +506,47 @@ function profileHTML() {
     <label>Alamat / patokan untuk ambil di tempat<input name="address" maxlength="160" value="${esc(s.address || '')}" placeholder="Contoh: Jl. Melati 5, depan masjid"></label>
     <p class="note" id="profileMsg" hidden></p>
     <button class="btn btn-red" type="submit">Simpan profil</button></form>`;
+}
+// ---------- Tampilan toko ----------
+function themeCard(k, cur) {
+  const t = THEMES[k], f = FONTS[t.font], v = t.v;
+  return `<button type="button" class="th-card${cur === k ? ' on' : ''}" data-theme-pick="${k}" aria-pressed="${cur === k}" style="--c:${v.cream};--k:${v.ink};--a:${v.red};--b:${v.butter};--l:${v.line};font-family:'${f.b}',sans-serif">
+    <span class="th-hero"><b style="font-family:'${f.d}',sans-serif">Aa</b><i></i></span><span class="th-name">${t.name}</span><span class="th-note">${t.note}</span></button>`;
+}
+function themeHTML() {
+  loadAllThemeFonts();
+  const t = SET.theme || {}, cur = THEMES[t.preset] ? t.preset : 'hangat', r = resolveTheme(t), pro = isPro();
+  const chips = (obj, key, val) => Object.entries(obj).map(([k, o]) => `<button type="button" class="chip" data-theme-set="${key}|${k}" aria-pressed="${val === k}">${typeof o === 'string' ? o : o.name}</button>`).join('');
+  return `<div class="card" style="margin-top:16px" id="themeBox"><h3>Tampilan toko</h3>
+    <p class="muted" style="font-size:14px;margin:4px 0 12px">Pilih gaya yang cocok dengan warung. Langsung berlaku di halaman pembeli.</p>
+    <div class="th-grid">${Object.keys(THEMES).map(k => themeCard(k, cur)).join('')}</div>
+    ${pro ? `<div class="th-pro"><p class="lbl">Warna utama</p>
+      <div class="th-row"><input type="color" id="thColor" value="${r.vars.red}" aria-label="Warna utama">
+        ${SET.logo_url ? '<button type="button" class="chip" data-theme-logo>Ambil dari logo</button>' : ''}
+        ${t.primary ? '<button type="button" class="chip" data-theme-set="primary|">Warna bawaan</button>' : ''}</div>
+      <p class="lbl">Jenis huruf</p><div class="th-row">${chips(FONTS, 'font', r.font)}</div>
+      <p class="lbl">Latar</p><div class="th-row">${chips(PATTERNS, 'pattern', r.pattern)}</div></div>`
+    : '<p class="muted" style="font-size:13px;margin:12px 0 0">Warna sendiri, jenis huruf, dan pola latar: fitur paket Pro.</p>'}
+    <div class="th-row" style="margin-top:14px"><a class="btn btn-ghost btn-sm" href="${esc(window.shopLink(SET))}" target="_blank" rel="noopener">Lihat toko</a>
+      <a class="linkbtn" href="https://wa.me/${CONFIG.SUPPORT_WA}?text=${encodeURIComponent('Halo, saya mau pesan desain khusus untuk toko ' + SET.name + ' (' + SET.slug + ').')}" target="_blank" rel="noopener">Mau desain khusus (maskot, ilustrasi)?</a></div></div>`;
+}
+async function saveTheme(patch) {
+  const next = { ...(SET.theme || {}), ...patch }; Object.keys(next).forEach(k => { if (next[k] === '' || next[k] == null) delete next[k]; });
+  const { error } = await sb.from('shops').update({ theme: next }).eq('id', SET.id);
+  if (error) return alert(error.message); await loadSettings(); render(); toast('Tampilan tersimpan ✓');
+}
+// Warna dominan dari logo (abaikan putih, hitam, dan abu-abu).
+async function logoColor() {
+  const img = new Image(); img.crossOrigin = 'anonymous'; img.src = SET.logo_url; await img.decode();
+  const c = document.createElement('canvas'); c.width = c.height = 48; const x = c.getContext('2d'); x.drawImage(img, 0, 0, 48, 48);
+  const d = x.getImageData(0, 0, 48, 48).data, bins = {};
+  for (let i = 0; i < d.length; i += 4) {
+    const [r, g, b, a] = [d[i], d[i + 1], d[i + 2], d[i + 3]], mx = Math.max(r, g, b), mn = Math.min(r, g, b);
+    if (a < 200 || mx < 40 || mn > 225 || mx - mn < 40) continue;
+    const k = [r, g, b].map(v => v >> 5).join(); (bins[k] ||= { n: 0, r: 0, g: 0, b: 0 }); const o = bins[k]; o.n++; o.r += r; o.g += g; o.b += b;
+  }
+  const best = Object.values(bins).sort((a, b) => b.n - a.n)[0]; if (!best) return null;
+  return '#' + [best.r, best.g, best.b].map(v => Math.round(v / best.n).toString(16).padStart(2, '0')).join('');
 }
 async function uploadLogo(inp) {
   const f = inp.files?.[0]; if (!f) return; const msg = $('profileMsg'); msg.hidden = false; msg.textContent = 'Mengunggah logo…';

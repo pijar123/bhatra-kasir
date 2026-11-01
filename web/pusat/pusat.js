@@ -42,6 +42,7 @@ function card(r) {
       <button type="button" data-ext="${r.id}|${r.plan === 'trial' ? 'pro' : r.plan}|12">+1 tahun</button>
       <button type="button" class="danger" data-sus="${r.id}|${!r.suspended}">${r.suspended ? 'Aktifkan lagi' : 'Bekukan'}</button>
       ${wa ? `<a class="wa" href="https://wa.me/${esc(wa)}" target="_blank" rel="noopener">WA</a>` : ''}
+      <button type="button" data-design="${r.id}">Desain khusus</button>
       <a href="${esc(window.shopLink(r))}" target="_blank" rel="noopener">Buka toko</a>
     </div></article>`;
 }
@@ -66,3 +67,46 @@ document.addEventListener('click', async e => {
   }
 });
 init();
+
+// ---------- Desain khusus per toko (jasa) ----------
+let DZ = null; // { id, slug, theme, design }
+const dz = id => document.getElementById(id);
+function dzState() {
+  const t = { preset: dz('dzPreset').value }; if (dz('dzUseColor').checked) t.primary = dz('dzColor').value;
+  if (dz('dzFont').value) t.font = dz('dzFont').value; if (dz('dzPattern').value) t.pattern = dz('dzPattern').value;
+  const d = { css: dz('dzCss').value, hero_img: dz('dzImg').value.trim(), note: dz('dzNote').value.trim() };
+  Object.keys(d).forEach(k => { if (!d[k]) delete d[k]; });
+  return { theme: t, design: d };
+}
+function dzPreview() { const f = dz('dzFrame'); if (f?.contentWindow) f.contentWindow.postMessage({ pratinjau: true, ...dzState() }, location.origin); }
+async function openDesign(id) {
+  const r = ROWS.find(x => x.id === id);
+  const { data: s } = await sb.rpc('resolve_shop', { p_host: null, p_slug: r.slug });
+  DZ = { id, slug: r.slug }; const t = s.theme || {}, d = s.design || {};
+  const opts = (o, v, none) => (none ? `<option value="">${none}</option>` : '') + Object.entries(o).map(([k, x]) => `<option value="${k}"${k === v ? ' selected' : ''}>${typeof x === 'string' ? x : x.name}</option>`).join('');
+  dz('dzBody').innerHTML = `<h2 style="margin:0 0 4px">Desain khusus · ${esc(r.name)}</h2>
+    <p class="muted" style="font-size:13px;margin:0 0 12px">Hanya admin pusat yang bisa mengubah CSS & gambar hero. Pratinjau langsung di kanan/bawah; tersimpan setelah ketuk Simpan.</p>
+    <div class="dz-grid"><div>
+      <label>Tema dasar<select id="dzPreset">${opts(THEMES, THEMES[t.preset] ? t.preset : 'hangat')}</select></label>
+      <label class="check"><input type="checkbox" id="dzUseColor"${t.primary ? ' checked' : ''}> Warna utama sendiri <input type="color" id="dzColor" value="${t.primary || '#C8372D'}"></label>
+      <label>Jenis huruf<select id="dzFont">${opts(FONTS, t.font, 'Bawaan tema')}</select></label>
+      <label>Latar<select id="dzPattern">${opts(PATTERNS, t.pattern, 'Bawaan tema')}</select></label>
+      <label>Gambar hero (URL https)<input id="dzImg" value="${esc(d.hero_img || '')}" placeholder="https://…/sampul.webp"></label>
+      <label>CSS tambahan<textarea id="dzCss" rows="9" spellcheck="false" style="font:13px/1.4 ui-monospace,monospace" placeholder=".hero{border-radius:0}\n.hero .kicker{letter-spacing:.04em}">${esc(d.css || '')}</textarea></label>
+      <label>Catatan pesanan desain<input id="dzNote" value="${esc(d.note || '')}" placeholder="Contoh: dibayar Rp500rb, 3 Nov"></label>
+      <p class="err" id="dzErr" hidden></p>
+      <div class="acts"><button type="button" class="next" id="dzSave">Simpan</button><button type="button" id="dzReset">Kosongkan desain</button><button type="button" id="dzClose">Tutup</button></div>
+    </div><iframe id="dzFrame" title="Pratinjau toko" src="/?toko=${encodeURIComponent(r.slug)}&pratinjau=1"></iframe></div>`;
+  dz('dzFrame').addEventListener('load', () => setTimeout(dzPreview, 600));
+  dz('dzBody').addEventListener('input', dzPreview); dz('dzBody').addEventListener('change', dzPreview);
+  dz('dzClose').onclick = () => dz('dzDialog').close();
+  dz('dzReset').onclick = () => { dz('dzCss').value = ''; dz('dzImg').value = ''; dzPreview(); };
+  dz('dzSave').onclick = async () => {
+    const st = dzState(), { error } = await sb.rpc('admin_update_design', { p_shop: DZ.id, p_design: st.design, p_theme: st.theme });
+    if (error) { dz('dzErr').textContent = error.message; dz('dzErr').hidden = false; return; }
+    dz('dzDialog').close(); init();
+  };
+  dz('dzDialog').showModal();
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-design]'); if (b) openDesign(b.dataset.design); });
+

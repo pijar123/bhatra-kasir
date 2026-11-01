@@ -39,11 +39,13 @@ function toast(t) { const el = document.createElement('div'); el.className = 'to
 /* ---------- toko ---------- */
 async function loadShop() {
   const slug = shopSlug();
+  if (!SET) { const c = store.get('tema_' + (slug || location.hostname), null); if (c) applyTheme(c.t, c.d); }
   const { data: shop, error: e1 } = await sb.rpc('resolve_shop', { p_host: location.hostname, p_slug: slug || SET?.slug || null });
   if (e1) { $('menu').innerHTML = '<p class="err">Toko gagal dimuat. Periksa internet lalu muat ulang halaman.</p>'; return; }
   if (!shop) return notFound(slug);
   const first = !SET; SET = shop;
   if (first) { cart = store.get(K('cart'), []); applyShop(); }
+  const th = SET.pro ? SET.theme : { preset: SET.theme?.preset }; applyTheme(th, SET.design); store.set('tema_' + (slug || location.hostname), { t: th, d: SET.design });
   const menu = await sb.from('menu_items').select('*').eq('shop_id', SET.id).order('sort');
   if (menu.error) { $('menu').innerHTML = '<p class="err">Menu gagal dimuat. Coba muat ulang halaman.</p>'; return; }
   MENU = menu.data; CATS = SET.categories?.length ? [...SET.categories] : [];
@@ -355,3 +357,5 @@ async function inlineSvg() {
 }
 new MutationObserver(inlineSvg).observe(document.body, { childList: true, subtree: true });
 inlineSvg();
+// Pratinjau tampilan dari admin pusat (iframe, origin sama).
+window.addEventListener('message', e => { if (e.origin === location.origin && e.data && e.data.pratinjau) applyTheme(e.data.theme, e.data.design); });
