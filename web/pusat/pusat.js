@@ -5,7 +5,7 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': 
 const rp = n => 'Rp' + Number(n || 0).toLocaleString('id-ID');
 const tgl = d => d ? new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
 const ago = d => { if (!d) return 'belum pernah'; const m = Math.round((Date.now() - new Date(d)) / 6e4); return m < 60 ? m + ' mnt lalu' : m < 1440 ? Math.round(m / 60) + ' jam lalu' : Math.round(m / 1440) + ' hari lalu'; };
-let ROWS = [], F = 'semua';
+let ROWS = [], F = 'semua', ERRS = [];
 
 async function init() {
   const { data: { session } } = await sb.auth.getSession();
@@ -13,6 +13,7 @@ async function init() {
   const { data, error } = await sb.rpc('admin_shops');
   if (error) { $('loginView').hidden = false; $('loginErr').textContent = 'Akun ini bukan admin pusat.'; $('loginErr').hidden = false; return; }
   ROWS = data || []; $('loginView').hidden = true; $('appView').hidden = false; render();
+  const er = await sb.rpc('admin_errors', { p_hours: 24 }); ERRS = er.data || []; renderErrs();
 }
 $('loginForm').addEventListener('submit', async e => {
   e.preventDefault(); const f = e.target;
@@ -22,6 +23,11 @@ $('loginForm').addEventListener('submit', async e => {
 });
 $('logout').onclick = async () => { await sb.auth.signOut(); location.reload(); };
 
+function renderErrs() {
+  const tot = ERRS.reduce((a, e) => a + Number(e.n), 0);
+  $('errs').innerHTML = `<details class="card"${tot ? '' : ' hidden'}><summary><b>${tot} error di HP pengguna (24 jam)</b></summary>
+    ${ERRS.map(e => `<p style="font-size:13px;margin:10px 0 0"><b>${esc(e.msg)}</b><br><span class="muted">${e.n}× · ${esc(e.shop || 'toko ?')} · ${esc(e.page)} · ${ago(e.last_at)}</span></p>`).join('')}</details>`;
+}
 function render() {
   const free = r => r.paid_until && new Date(r.paid_until).getFullYear() >= 2090;
   const paid = ROWS.filter(r => r.plan !== 'trial' && r.active && !free(r)), trial = ROWS.filter(r => r.plan === 'trial' && r.active);

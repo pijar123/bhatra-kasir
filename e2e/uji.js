@@ -159,6 +159,10 @@ async function halaman(b) {
   cek('tanpa slug diarahkan ke /produk/', pg.url().includes('/produk/'), pg.url());
   await pg.goto(B + '/produk/'); await pg.screenshot({ path: SHOT + '/6-produk.png', fullPage: true });
   cek('tanpa error JS (produk)', !pg.errs.length, pg.errs.join(' | '));
+  await pg.goto(B + '/?toko=bhatra'); await pg.waitForSelector('[data-add]');
+  await pg.evaluate(() => setTimeout(() => { throw new Error('uji-pantau'); }));
+  await pg.waitForTimeout(1200);
+  cek('error browser tercatat ke pemantauan', sql("select count(*) from client_errors where msg like '%uji-pantau%' and shop_id is not null") === '1');
   await b.close();
 
   console.log(gagal ? `\n${gagal} GAGAL, ${ok} lulus` : `\nSEMUA ${ok} UJI LULUS`);

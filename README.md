@@ -23,7 +23,7 @@ v1/                  salinan situs bhatra.id saat ini, untuk cadangan
 Lakukan saat warung sepi, misalnya malam setelah tutup. Halaman lama tidak cocok dengan database baru, jadi langkah 2 dan 3 harus berdekatan.
 
 1. **Cadangan.** Di Supabase pilih Database lalu Backups. Di Hostinger, unduh isi `public_html`.
-2. **Migrasi database.** Di Supabase buka SQL Editor, tempel seluruh isi `supabase/migrations/001_banyak_warung.sql`, lalu Run. Ulangi untuk `002_tampilan.sql`. Hasil yang diharapkan: "Success. No rows returned".
+2. **Migrasi database.** Di Supabase buka SQL Editor, tempel seluruh isi `supabase/migrations/001_banyak_warung.sql`, lalu Run. Ulangi untuk `002_tampilan.sql` dan `003_pantau.sql`. Hasil yang diharapkan: "Success. No rows returned".
 3. **Unggah situs.** Ganti isi `public_html` dengan isi folder `web/`, termasuk `.htaccess`.
 4. **Admin pusat.** Di SQL Editor jalankan:
    ```sql
@@ -66,6 +66,18 @@ Ganti `PRODUCT` dan `ROOT_DOMAIN` setelah nama produk diputuskan.
 - Daftar tema ada di `web/themes.js`. Untuk menambah tema, cukup tambah satu entri.
 - Jalankan `002_tampilan.sql` setelah `001` (aman dijalankan ulang).
 
+## Backup & pemantauan (migrasi 003 + GitHub Actions di repo bhatra-kasir, branch main)
+
+- **Backup harian 02.23 WIB** (`.github/workflows/backup.yml`): dump skema public+auth, dienkripsi AES-256, disimpan 30 hari di tab Actions.
+  Perlu 2 secret di GitHub (Settings → Secrets and variables → Actions):
+  - `SUPABASE_DB_URL`: dari Supabase → Connect → **Session pooler**. Ganti `[YOUR-PASSWORD]` dengan password database.
+  - `BACKUP_PASSWORD`: kata sandi panjang buatan sendiri. Simpan di tempat aman, karena tanpa ini backup tidak bisa dibuka.
+
+  Foto banner/logo di Storage tidak ikut backup.
+- **Pantau tiap jam 06.41–22.41 WIB** (`.github/workflows/pantau.yml`): situs bisa dibuka, database menjawab, HP kasir toko Pro lapor dalam 60 menit saat jam buka, error browser kurang dari 20 per jam.
+  Kalau ada yang gagal, GitHub mengirim email ke pemilik repo. Workflow ini juga menggantikan keepalive.
+- **Error di HP pengguna** dicatat lewat `web/pantau.js` dan bisa dilihat di `/pusat/` (24 jam terakhir).
+
 ## Paket
 
 Masa coba dan Pro mendapat semua fitur. Dasar tidak mendapat promo/voucher, harga coret, stok harian, banner, lunas otomatis via HP kasir, notifikasi kasir, dan rekap lebih dari 1 hari.
@@ -79,11 +91,9 @@ bash supabase/tests/jalankan.sh     # perlu PostgreSQL 16 lokal
 
 ## Uji ujung-ke-ujung (browser)
 
-Menguji pembeli memesan, dashboard pemilik, pendaftaran toko baru, isolasi antar toko, admin pusat, dan tampilan HP (39 uji).
+Menguji pembeli memesan, dashboard pemilik, pendaftaran toko baru, isolasi antar toko, admin pusat, dan tampilan HP (40 uji).
 Perlu PostgreSQL 16 lokal, [PostgREST](https://github.com/PostgREST/postgrest/releases) dan Playwright.
 
 ```
-bash e2e/setup.sh                 # database e2e + PostgREST :3001
-node e2e/server.js &              # situs + tiruan Supabase di :8080
-node e2e/uji.js                   # SEMUA 39 UJI LULUS
+bash e2e/jalankan.sh              # SEMUA 40 UJI LULUS
 ```
