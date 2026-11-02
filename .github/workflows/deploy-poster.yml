@@ -2,7 +2,7 @@ name: Kirim aplikasi Poster ke bhatra.id
 # Tiap ada perubahan di folder web/poster (branch main), file dikirim ke hosting hPanel lewat FTP.
 # Isi sekali di GitHub → Settings → Secrets and variables → Actions:
 #   Secrets  : FTP_SERVER, FTP_USERNAME, FTP_PASSWORD  (dari hPanel → File → Akun FTP)
-#   Variable : FTP_DIR (opsional, bawaan "public_html/poster/")
+#   Variable : FTP_DIR (opsional, bawaan "poster/" — akun FTP Hostinger sudah langsung masuk ke public_html)
 on:
   push:
     branches: [main]
@@ -29,7 +29,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./web/poster/
-          server-dir: ${{ vars.FTP_DIR || 'public_html/poster/' }}
+          server-dir: ${{ vars.FTP_DIR || 'poster/' }}
       - name: Cek halaman bisa dibuka
         run: |
           sleep 5
