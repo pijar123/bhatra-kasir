@@ -1,0 +1,17 @@
+{
+  "name": "Bikin Poster BHATRA",
+  "short_name": "Poster BHATRA",
+  "description": "Upload foto makanan, tulis catatan, simpan poster BHATRA untuk IG dan status WA.",
+  "lang": "id",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFF4E2",
+  "theme_color": "#C8372D",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

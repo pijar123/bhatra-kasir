@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Bikin Poster BHATRA</title>
+<meta name="theme-color" content="#C8372D">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Poster BHATRA">
+<link rel="stylesheet" href="fonts.css">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+/* Layout: satu kolom sempit — upload, pratinjau, catatan, simpan */
+:root{
+  --bg:#FFF4E2; --panel:#FFFFFF; --ink:#3A1E12; --muted:#7A5A48; --line:#EAD7B8;
+  --sambal:#C8372D; --kunyit:#F2B33D; --chip:#FBEBD0; --ok:#2F7D4F;
+  --display:'Bricolage Grotesque',system-ui,sans-serif;
+  --body:'Plus Jakarta Sans',system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1E120C; --panel:#2A1A12; --ink:#FBEAD6; --muted:#C9A98F; --line:#4A3226;
+  --sambal:#E5554A; --kunyit:#F2B33D; --chip:#3A261A; --ok:#5BBE84; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1E120C; --panel:#2A1A12; --ink:#FBEAD6; --muted:#C9A98F; --line:#4A3226;
+  --sambal:#E5554A; --kunyit:#F2B33D; --chip:#3A261A; --ok:#5BBE84; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5}
+.wrap{max-width:560px;margin:0 auto;padding-block:24px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:20px}
+header{display:flex;flex-direction:column;gap:4px}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--sambal)}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(30px,8vw,40px);line-height:1.05;letter-spacing:-.02em;margin:0}
+.upload{position:relative;display:flex;align-items:center;justify-content:center;gap:12px;background:var(--sambal);color:#FFF4E2;border-radius:18px;padding:18px;font:800 18px var(--body);cursor:pointer;min-height:64px}
+.upload.ganti{background:var(--panel);color:var(--ink);border:2px solid var(--line);font-size:16px;min-height:52px;padding:12px}
+.upload input{position:absolute;width:1px;height:1px;opacity:0}
+.upload:focus-within{outline:3px solid var(--kunyit);outline-offset:2px}
+.seg{display:flex;background:var(--chip);border-radius:99px;padding:4px;gap:4px}
+.seg button{flex:1;border:0;background:transparent;color:var(--ink);font:700 14px var(--body);padding:10px 12px;border-radius:99px;cursor:pointer;min-height:44px}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.canvasbox{background:var(--panel);border:1.5px solid var(--line);border-radius:20px;padding:10px;display:flex;justify-content:center}
+canvas{display:block;width:100%;height:auto;max-height:70vh;object-fit:contain;border-radius:8px;touch-action:none;cursor:grab}
+canvas.drag{cursor:grabbing}
+.hint{font-size:13px;color:var(--muted);margin:0}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-weight:800;font-size:15px}
+textarea{font:600 17px/1.4 var(--body);color:var(--ink);background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:12px 14px;width:100%;resize:vertical;min-height:84px}
+.ideas{display:flex;gap:8px;flex-wrap:wrap}
+.ideas button{border:0;background:var(--chip);color:var(--ink);font:700 13px var(--body);padding:8px 12px;border-radius:99px;cursor:pointer;min-height:36px}
+.gaya{align-self:center;border:2px solid var(--line);background:var(--panel);color:var(--ink);font:800 15px var(--body);padding:10px 18px;border-radius:99px;cursor:pointer;min-height:44px}
+.gaya::after{content:"  ↻";color:var(--sambal)}
+.save{border:0;background:var(--sambal);color:#FFF4E2;font:800 19px var(--body);padding:16px 22px;border-radius:18px;cursor:pointer;min-height:58px;width:100%}
+.save:disabled{opacity:.6;cursor:default}
+.status{font-size:14px;color:var(--muted);min-height:1.5em;margin:0;text-align:center}
+.status.ok{color:var(--ok);font-weight:700}
+.install{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--panel);border:2px solid var(--line);border-radius:16px;padding:12px 14px;font-weight:700;font-size:14px}
+.install button{border:0;background:var(--ink);color:var(--bg);font:800 14px var(--body);padding:10px 16px;border-radius:99px;cursor:pointer;min-height:44px;flex:none}
+.net{font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--muted)}
+button:focus-visible,textarea:focus-visible{outline:3px solid var(--kunyit);outline-offset:2px}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Warung Jajan BHATRA</span>
+    <h1>Bikin Poster</h1>
+    <span class="net" id="net"></span>
+  </header>
+  <div class="install" id="install" hidden><span id="installText">Pasang aplikasi ini di HP biar bisa dipakai tanpa sinyal.</span><button type="button" id="installBtn">Pasang</button></div>
+
+  <label class="upload" for="file" id="uplabel">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg>
+    <span id="filelabel">Upload foto makanan</span>
+    <input type="file" id="file" accept="image/*">
+  </label>
+
+  <div class="seg" role="group" aria-label="Ukuran poster">
+    <button type="button" id="fmt-feed" aria-pressed="true">Feed IG</button>
+    <button type="button" id="fmt-story" aria-pressed="false">Story / Status WA</button>
+  </div>
+
+  <button type="button" class="gaya" id="gaya">Gaya: Santan</button>
+  <div class="canvasbox"><canvas id="cv" width="1080" height="1350" aria-label="Pratinjau poster"></canvas></div>
+  <p class="hint" id="hint">Foto di pratinjau masih contoh. Gaya poster berganti otomatis tiap hari.</p>
+
+  <div class="field">
+    <label for="note">Catatan</label>
+    <textarea id="note" maxlength="70" rows="2"></textarea>
+    <div class="ideas" aria-label="Contoh catatan">
+      <button type="button">Ayam geprek hari ini ready!</button>
+      <button type="button">Sate taichan baru matang, pesan sekarang!</button>
+      <button type="button">Sore ini delivery sampai jam 8 ya!</button>
+    </div>
+  </div>
+
+  <button type="button" class="save" id="save">Simpan poster</button>
+  <p class="status" id="status" role="status"></p>
+</div>
+
+<script>
+const SAMPLE = "sample.jpg";
+const LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" width="1120" height="800"><defs>
+<symbol id="boy" viewBox="0 0 200 220"><path d="M28 220C28 178 58 162 100 162C142 162 172 178 172 220Z" fill="#F1DFC2"/><g fill="#D9BE95"><circle cx="66" cy="192" r="3"/><circle cx="92" cy="206" r="3"/><circle cx="126" cy="184" r="3"/><circle cx="150" cy="204" r="3"/><circle cx="118" cy="212" r="3"/><circle cx="140" cy="194" r="3"/></g><circle cx="49" cy="108" r="14" fill="#E0A57C"/><circle cx="151" cy="108" r="14" fill="#E0A57C"/><ellipse cx="100" cy="108" rx="52" ry="50" fill="#F2C29C"/><path d="M50 98C48 66 72 54 100 54C128 54 152 66 150 98C142 80 122 72 100 72C78 72 58 80 50 98Z" fill="#2B1810"/><path d="M98 56Q92 44 104 38" fill="none" stroke="#2B1810" stroke-width="4" stroke-linecap="round"/><ellipse cx="80" cy="114" rx="8" ry="9.5" fill="#2B1810"/><ellipse cx="120" cy="114" rx="8" ry="9.5" fill="#2B1810"/><circle cx="83" cy="110" r="3" fill="#FFFFFF"/><circle cx="123" cy="110" r="3" fill="#FFFFFF"/><ellipse cx="66" cy="131" rx="9" ry="5.5" fill="#EE8C78" opacity=".6"/><ellipse cx="134" cy="131" rx="9" ry="5.5" fill="#EE8C78" opacity=".6"/><path d="M96 124Q100 127 104 124" fill="none" stroke="#D08A62" stroke-width="2.5" stroke-linecap="round"/><path d="M86 133Q100 151 114 133Q100 137 86 133Z" fill="#8E2B22"/><path d="M93 142Q100 148 107 142Q100 139 93 142Z" fill="#E2665A"/><g transform="rotate(-8 80 184)"><rect x="58" y="166" width="44" height="36" rx="5" fill="#E7AE5B" stroke="#C98A3A" stroke-width="2"/><g fill="#C98A3A"><circle cx="68" cy="176" r="2"/><circle cx="80" cy="176" r="2"/><circle cx="92" cy="176" r="2"/><circle cx="68" cy="190" r="2"/><circle cx="80" cy="190" r="2"/><circle cx="92" cy="190" r="2"/></g></g><circle cx="56" cy="196" r="11" fill="#F2C29C"/><circle cx="104" cy="191" r="11" fill="#F2C29C"/></symbol>
+<symbol id="girl" viewBox="0 0 200 220"><path d="M28 220C28 178 58 162 100 162C142 162 172 178 172 220Z" fill="#3A1E12"/><path d="M82 165L100 180L118 165" fill="none" stroke="#FFF4E2" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><g fill="#F2B33D"><circle cx="62" cy="200" r="3"/><circle cx="88" cy="186" r="3"/><circle cx="80" cy="210" r="3"/><circle cx="112" cy="208" r="3"/><circle cx="152" cy="190" r="3"/></g><circle cx="49" cy="108" r="14" fill="#E0A57C"/><circle cx="151" cy="108" r="14" fill="#E0A57C"/><ellipse cx="100" cy="108" rx="52" ry="50" fill="#F2C29C"/><g fill="#2B1810"><circle cx="56" cy="80" r="20"/><circle cx="70" cy="62" r="20"/><circle cx="88" cy="52" r="20"/><circle cx="112" cy="52" r="20"/><circle cx="130" cy="62" r="20"/><circle cx="144" cy="80" r="20"/><circle cx="100" cy="46" r="18"/><circle cx="46" cy="100" r="14"/><circle cx="154" cy="100" r="14"/><circle cx="82" cy="74" r="11"/><circle cx="100" cy="70" r="11"/><circle cx="118" cy="74" r="11"/></g><ellipse cx="80" cy="114" rx="8" ry="9.5" fill="#2B1810"/><ellipse cx="120" cy="114" rx="8" ry="9.5" fill="#2B1810"/><circle cx="83" cy="110" r="3" fill="#FFFFFF"/><circle cx="123" cy="110" r="3" fill="#FFFFFF"/><path d="M69 97Q79 91 90 96M110 96Q121 91 131 97" fill="none" stroke="#2B1810" stroke-width="5" stroke-linecap="round"/><ellipse cx="66" cy="131" rx="9" ry="5.5" fill="#EE8C78" opacity=".35"/><ellipse cx="134" cy="131" rx="9" ry="5.5" fill="#EE8C78" opacity=".35"/><path d="M96 124Q100 127 104 124" fill="none" stroke="#D08A62" stroke-width="2.5" stroke-linecap="round"/><path d="M86 133Q100 151 114 133Q100 137 86 133Z" fill="#8E2B22"/><path d="M93 142Q100 148 107 142Q100 139 93 142Z" fill="#E2665A"/><path d="M136 196L154 212" stroke="#B88A5E" stroke-width="10" stroke-linecap="round"/><path d="M136 196L154 212" stroke="#FFF4E2" stroke-width="6" stroke-linecap="round"/><circle cx="156" cy="208" r="5" fill="#FFF4E2" stroke="#B88A5E" stroke-width="2"/><circle cx="151" cy="215" r="5" fill="#FFF4E2" stroke="#B88A5E" stroke-width="2"/><ellipse cx="120" cy="184" rx="23" ry="19" fill="#C9742C"/><g fill="#A85A1C"><circle cx="110" cy="178" r="3"/><circle cx="122" cy="174" r="2.5"/><circle cx="130" cy="186" r="3"/><circle cx="114" cy="192" r="2.5"/><circle cx="122" cy="196" r="2"/></g><g fill="#E39A4B"><circle cx="116" cy="183" r="2"/><circle cx="126" cy="179" r="1.8"/></g><circle cx="100" cy="197" r="11" fill="#F2C29C"/><circle cx="140" cy="200" r="10" fill="#F2C29C"/></symbol></defs>
+<use href="#boy" x="36" y="10" width="170" height="187"/><use href="#girl" x="354" y="10" width="170" height="187"/>
+<rect x="30" y="168" width="500" height="200" rx="32" fill="#C8372D"/><rect x="44" y="182" width="472" height="172" rx="22" fill="none" stroke="#FFF4E2" stroke-opacity=".35" stroke-width="2"/></svg>`;
+const C = {sambal:'#C8372D', kunyit:'#F2B33D', kecap:'#3A1E12', santan:'#FFF4E2', soft:'#6E5040', paper:'#FFFBF4'};
+const FD = '"Bricolage Grotesque", system-ui, sans-serif';
+const FB = '"Plus Jakarta Sans", system-ui, sans-serif';
+const mascotSvg = id => LOGO_SVG.slice(0, LOGO_SVG.indexOf('</defs>') + 7)
+  .replace('viewBox="0 0 560 400" width="1120" height="800"', 'viewBox="0 0 200 220" width="400" height="440"')
+  + `<use href="#${id}" x="0" y="0" width="200" height="220"/></svg>`;
+const BHRE_SVG = mascotSvg('girl'), TRAH_SVG = mascotSvg('boy');
+
+const $ = id => document.getElementById(id);
+const cv = $('cv'), ctx = cv.getContext('2d');
+const S = { fmt:'feed', ox:0, oy:0, raw:null, fixed:null, isSample:true, theme:0 };
+let logoImg = null, bhreImg = null, trahImg = null;
+function nextTheme(){ S.theme = (S.theme + 1) % THEMES.length; }
+function todayTheme(){
+  const d = new Date(), day = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000);
+  return ((day % 5) + 5) % 5;
+}
+
+function loadImage(url){ return new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; }); }
+function toCanvas(img, maxSide){
+  const k = Math.min(1, maxSide / Math.max(img.naturalWidth, img.naturalHeight));
+  const c = document.createElement('canvas');
+  c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
+  c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+  return c;
+}
+function enhance(srcCanvas){
+  const w = srcCanvas.width, h = srcCanvas.height;
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const x = c.getContext('2d'); x.drawImage(srcCanvas, 0, 0);
+  const id = x.getImageData(0, 0, w, h), d = id.data;
+  for (let i = 0; i < d.length; i += 4){
+    let r = d[i] * 1.04 + 2, g = d[i+1], b = d[i+2] * 0.94;
+    r = (r - 128) * 1.10 + 128; g = (g - 128) * 1.10 + 128; b = (b - 128) * 1.10 + 128;
+    const l = 0.299*r + 0.587*g + 0.114*b;
+    d[i] = (l + (r - l) * 1.18) * 1.04; d[i+1] = (l + (g - l) * 1.18) * 1.04; d[i+2] = (l + (b - l) * 1.18) * 1.04;
+  }
+  const src = new Uint8ClampedArray(d), a = 0.55, row = w * 4;
+  for (let y = 1; y < h - 1; y++) for (let xx = 1; xx < w - 1; xx++){
+    const p = (y * w + xx) * 4;
+    for (let ch = 0; ch < 3; ch++){
+      const q = p + ch;
+      const blur = (src[q-row-4]+src[q-row]+src[q-row+4]+src[q-4]+src[q]+src[q+4]+src[q+row-4]+src[q+row]+src[q+row+4]) / 9;
+      d[q] = src[q] + a * (src[q] - blur);
+    }
+  }
+  x.putImageData(id, 0, 0);
+  return c;
+}
+const photo = () => S.isSample ? S.raw : S.fixed;
+
+/* ---------- alat gambar bersama ---------- */
+let PHOTO_RECT = {x:0, y:0, w:1, h:1};
+function rr(x, y, w, h, r){ ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function font(wt, size, fam){ ctx.font = `${wt} ${size}px ${fam}`; }
+function spacing(px){ if ('letterSpacing' in ctx) ctx.letterSpacing = px + 'px'; }
+function wrap(text, maxW){
+  const words = text.trim().split(/\s+/), lines = []; let cur = '';
+  for (const w of words){ const t = cur ? cur + ' ' + w : w; if (ctx.measureText(t).width <= maxW || !cur) cur = t; else { lines.push(cur); cur = w; } }
+  if (cur) lines.push(cur); return lines;
+}
+function cover(img, w, h){
+  const s = Math.max(w / img.width, h / img.height), dw = img.width * s, dh = img.height * s;
+  const mx = (dw - w) / 2, my = (dh - h) / 2;
+  return { dw, dh, mx, my, dx: -mx + S.ox * mx, dy: -my + S.oy * my };
+}
+function drawPhoto(x, y, w, h, opt = {}){
+  const img = photo(); ctx.save(); ctx.beginPath();
+  if (opt.circle) ctx.arc(x + w / 2, y + h / 2, Math.min(w, h) / 2, 0, Math.PI * 2); else rr(x, y, w, h, opt.r || 0);
+  ctx.clip();
+  if (img){ const c = cover(img, w, h); ctx.drawImage(img, x + c.dx, y + c.dy, c.dw, c.dh); }
+  else { ctx.fillStyle = '#F1DFC2'; ctx.fillRect(x, y, w, h); }
+  ctx.restore();
+}
+function drawLogo(x, y, w, outline){
+  const k = w / 560;
+  if (logoImg) ctx.drawImage(logoImg, x, y, w, w * 400 / 560);
+  if (outline){ ctx.lineWidth = 7 * k * 1.6; ctx.strokeStyle = outline; rr(x + 30 * k, y + 168 * k, 500 * k, 200 * k, 32 * k); ctx.stroke(); }
+  const cx = x + 280 * k; ctx.textAlign = 'center';
+  font(800, 22 * k, FB); spacing(8 * k); ctx.fillStyle = C.kunyit; ctx.fillText('WARUNG JAJAN', cx + 4 * k, y + 232 * k);
+  font(800, 100 * k, FD); spacing(-2 * k); ctx.fillStyle = C.santan; ctx.fillText('BHATRA', cx, y + 326 * k);
+  spacing(0); ctx.textAlign = 'left';
+}
+function mascot(who, x, y, w){ const im = who === 'bhre' ? bhreImg : trahImg; if (im) ctx.drawImage(im, x, y, w, w * 1.1); }
+function tagline(x, y, align, c1, c2, sub){
+  ctx.textAlign = align; font(800, 62, FD); spacing(-2);
+  ctx.fillStyle = c1; ctx.fillText('Dari dapur', x, y); ctx.fillStyle = c2; ctx.fillText('Bhre & Trah', x, y + 66); spacing(0);
+  if (sub){ font(700, 24, FB); ctx.fillStyle = sub; ctx.fillText('Masakan rumahan, harga pelajar.', x + (align === 'left' ? 2 : 0), y + 110); }
+  ctx.textAlign = 'left';
+}
+function bubble(text, o){
+  if (!text) return;
+  const fill = o.fill || C.paper, stroke = o.stroke || C.kecap, ink = o.ink || C.kecap;
+  let size = 40, lines;
+  do { font(800, size, FD); lines = wrap(text, o.maxW - 64); size -= 2; } while (lines.length > 3 && size > 22);
+  size += 2; font(800, size, FD);
+  const lh = size * 1.18, bw = Math.min(o.maxW, Math.max(...lines.map(t => ctx.measureText(t).width)) + 64), bh = lines.length * lh + 40;
+  const bx = o.tail === 'right' ? o.x - bw : o.x, by = o.yb - bh;
+  ctx.fillStyle = fill; ctx.strokeStyle = stroke; ctx.lineWidth = 5;
+  rr(bx, by, bw, bh, 26); ctx.fill(); ctx.stroke();
+  ctx.beginPath();
+  if (o.tail === 'right'){ ctx.moveTo(bx + bw - 2, by + bh - 52); ctx.lineTo(bx + bw + 34, by + bh - 6); ctx.lineTo(bx + bw - 2, by + bh - 20); }
+  else { ctx.moveTo(bx + 2, by + bh - 52); ctx.lineTo(bx - 34, by + bh - 6); ctx.lineTo(bx + 2, by + bh - 20); }
+  ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.fillRect(o.tail === 'right' ? bx + bw - 7 : bx - 1, by + bh - 50, 8, 28);
+  ctx.fillStyle = ink; ctx.textAlign = 'left'; spacing(-0.5);
+  lines.forEach((t, i) => ctx.fillText(t, bx + 32, by + 20 + size * 0.86 + i * lh)); spacing(0);
+}
+function hours(y, c1, c2){
+  const a = 'Buka 10.00–22.00 WIB · ', b = 'Delivery & COD s.d. 20.00';
+  font(800, 24, FB); const wa = ctx.measureText(a).width, wb = ctx.measureText(b).width, x0 = (1080 - wa - wb) / 2;
+  ctx.textAlign = 'left'; ctx.fillStyle = c1; ctx.fillText(a, x0, y); ctx.fillStyle = c2; ctx.fillText(b, x0 + wa, y);
+}
+function footer(story, bg, ink, accent){
+  ctx.fillStyle = bg;
+  if (!story){
+    ctx.fillRect(0, 1246, 1080, 104);
+    ctx.textAlign = 'left'; font(800, 44, FD); ctx.fillStyle = ink; ctx.fillText('WA 0813-9112-5240', 60, 1312);
+    ctx.textAlign = 'right'; font(800, 20, FB); ctx.fillStyle = accent; ctx.fillText('Maps: RUMAH BHRE', 1020, 1290);
+    font(500, 18, FB); ctx.fillStyle = ink; ctx.fillText('Karangtempel, Demangsari, Kec. Ayah, Kebumen', 1020, 1320);
+  } else {
+    ctx.fillRect(0, 1560, 1080, 360); ctx.textAlign = 'center';
+    font(800, 22, FB); spacing(4); ctx.fillStyle = accent; ctx.fillText('PESAN LEWAT WA', 540, 1620); spacing(0);
+    font(800, 64, FD); spacing(-1); ctx.fillStyle = ink; ctx.fillText('0813-9112-5240', 540, 1686); spacing(0);
+    font(500, 20, FB); ctx.fillText('Maps: RUMAH BHRE · Karangtempel, Demangsari, Kec. Ayah, Kebumen', 540, 1726);
+  }
+  ctx.textAlign = 'left';
+}
+function bg(color){ ctx.fillStyle = color; ctx.fillRect(0, 0, cv.width, cv.height); }
+
+/* ---------- lima tema ---------- */
+const THEMES = [
+  { name: 'Santan', draw(st, note){
+      bg(C.santan);
+      if (!st){
+        drawLogo(32, 20, 350); tagline(420, 120, 'left', C.kecap, C.sambal, C.soft);
+        drawPhoto(40, 284, 1000, 866, {r:40}); PHOTO_RECT = {x:40, y:284, w:1000, h:866};
+        bubble(note, {x:236, yb:1130, maxW:780}); mascot('bhre', 44, 930, 200); hours(1226, C.kecap, C.sambal);
+      } else {
+        drawLogo(309, 130, 462);
+        drawPhoto(40, 500, 1000, 820, {r:40}); PHOTO_RECT = {x:40, y:500, w:1000, h:820};
+        bubble(note, {x:250, yb:1470, maxW:780}); mascot('bhre', 44, 1268, 210); hours(1528, C.kecap, C.sambal);
+      }
+      footer(st, C.sambal, C.santan, C.kunyit);
+  }},
+  { name: 'Sambal', draw(st, note){
+      bg(C.sambal);
+      const lw = st ? 500 : 380; drawLogo((1080 - lw) / 2, st ? 110 : 24, lw, C.santan);
+      const pw = 900, ph = st ? 880 : 740, top = st ? 520 : 316, pad = 18;
+      const cx = 540, cy = top + pad + ph / 2;
+      ctx.save(); ctx.translate(cx, cy); ctx.rotate(-2.5 * Math.PI / 180);
+      ctx.shadowColor = 'rgba(40,10,5,.35)'; ctx.shadowBlur = 30; ctx.shadowOffsetY = 12;
+      ctx.fillStyle = C.paper; rr(-pw / 2 - pad, -ph / 2 - pad, pw + pad * 2, ph + pad * 2, 22); ctx.fill();
+      ctx.shadowColor = 'transparent';
+      drawPhoto(-pw / 2, -ph / 2, pw, ph, {r:12}); ctx.restore();
+      PHOTO_RECT = {x:cx - pw / 2, y:cy - ph / 2, w:pw, h:ph};
+      const my = st ? 1262 : 902;
+      bubble(note, {x:830, yb: my + 200, maxW:740, tail:'right'}); mascot('trah', 836, my, st ? 220 : 205);
+      hours(st ? 1528 : 1210, C.santan, C.kunyit);
+      footer(st, C.kecap, C.santan, C.kunyit);
+  }},
+  { name: 'Kunyit', draw(st, note){
+      bg(C.kunyit);
+      const ph = st ? 1060 : 740;
+      drawPhoto(0, 0, 1080, ph); PHOTO_RECT = {x:0, y:0, w:1080, h:ph};
+      const lw = st ? 400 : 370, ly = ph - lw * 0.42;
+      drawLogo(36, ly, lw);
+      bubble(note, {x: 36 + lw + 52, yb: ly + lw * 0.68, maxW: 1080 - (36 + lw + 52) - 36});
+      const ty = st ? 1330 : 990;
+      tagline(540, ty, 'center', C.kecap, C.sambal, C.kecap);
+      hours(st ? 1528 : 1214, C.kecap, C.sambal);
+      footer(st, C.sambal, C.santan, C.kunyit);
+  }},
+  { name: 'Kecap', draw(st, note){
+      bg(C.kecap);
+      const lw = st ? 440 : 320; drawLogo((1080 - lw) / 2, st ? 100 : 20, lw);
+      const r = st ? 440 : 368, cy = st ? 900 : 650, x = 540 - r, y = cy - r;
+      ctx.lineWidth = 14; ctx.strokeStyle = C.kunyit; ctx.beginPath(); ctx.arc(540, cy, r + 9, 0, Math.PI * 2); ctx.stroke();
+      drawPhoto(x, y, r * 2, r * 2, {circle:true}); PHOTO_RECT = {x, y, w:r * 2, h:r * 2};
+      const my = st ? 1232 : 896;
+      bubble(note, {x:282, yb: my + 220, maxW:760, fill:C.kunyit, stroke:C.kunyit, ink:C.kecap});
+      mascot('bhre', 50, my, st ? 220 : 205);
+      hours(st ? 1530 : 1212, C.santan, C.kunyit);
+      footer(st, C.sambal, C.santan, C.kunyit);
+  }},
+  { name: 'Polaroid', draw(st, note){
+      bg(C.santan);
+      ctx.fillStyle = 'rgba(242,179,61,.35)';
+      for (let yy = 18; yy < (st ? 1560 : 1246); yy += 36) for (let xx = 18; xx < 1080; xx += 36){ ctx.beginPath(); ctx.arc(xx, yy, 3, 0, Math.PI * 2); ctx.fill(); }
+      if (!st){ drawLogo(32, 20, 350); tagline(420, 120, 'left', C.kecap, C.sambal, C.soft); }
+      else drawLogo(309, 120, 462);
+      const cw = st ? 900 : 860, pin = 32, pw = cw - pin * 2, ph = st ? 760 : 670, cap = 150, chh = pin + ph + cap;
+      const top = st ? 500 : 290, cx = 540, cy = top + chh / 2;
+      ctx.save(); ctx.translate(cx, cy); ctx.rotate(2 * Math.PI / 180);
+      ctx.shadowColor = 'rgba(58,30,18,.28)'; ctx.shadowBlur = 28; ctx.shadowOffsetY = 12;
+      ctx.fillStyle = '#FFFFFF'; ctx.fillRect(-cw / 2, -chh / 2, cw, chh); ctx.shadowColor = 'transparent';
+      drawPhoto(-pw / 2, -chh / 2 + pin, pw, ph);
+      if (note){
+        let size = 44, lines; do { font(800, size, FD); lines = wrap(note, pw - 40); size -= 2; } while (lines.length > 2 && size > 22);
+        size += 2; font(800, size, FD); ctx.fillStyle = C.kecap; ctx.textAlign = 'center';
+        const lh = size * 1.15, cy0 = -chh / 2 + pin + ph + cap / 2 - (lines.length - 1) * lh / 2 + size * 0.34;
+        lines.forEach((t, i) => ctx.fillText(t, 0, cy0 + i * lh)); ctx.textAlign = 'left';
+      }
+      ctx.restore();
+      PHOTO_RECT = {x:cx - pw / 2, y:top + pin, w:pw, h:ph};
+      mascot('trah', 22, st ? 1318 : 1014, st ? 205 : 185);
+      hours(st ? 1532 : 1226, C.kecap, C.sambal);
+      footer(st, C.sambal, C.santan, C.kunyit);
+  }}
+];
+
+function draw(){
+  const st = S.fmt === 'story', W = 1080, H = st ? 1920 : 1350;
+  if (cv.width !== W || cv.height !== H){ cv.width = W; cv.height = H; }
+  spacing(0); ctx.textAlign = 'left';
+  THEMES[S.theme].draw(st, $('note').value.trim());
+  $('gaya').textContent = 'Gaya: ' + THEMES[S.theme].name;
+}
+function geom(){
+  const img = photo(); if (!img) return null;
+  return cover(img, PHOTO_RECT.w, PHOTO_RECT.h);
+}
+
+/* kontrol */
+$('note').addEventListener('input', draw);
+for (const b of document.querySelectorAll('.ideas button')) b.addEventListener('click', () => { $('note').value = b.textContent; draw(); });
+function setFmt(f){ S.fmt = f; $('fmt-feed').setAttribute('aria-pressed', f === 'feed'); $('fmt-story').setAttribute('aria-pressed', f === 'story'); draw(); }
+$('fmt-feed').addEventListener('click', () => setFmt('feed'));
+$('fmt-story').addEventListener('click', () => setFmt('story'));
+$('gaya').addEventListener('click', () => { nextTheme(); S.ox = 0; S.oy = 0; draw(); });
+
+$('file').addEventListener('change', async e => {
+  const file = e.target.files && e.target.files[0]; if (!file) return;
+  setStatus('Merapikan foto…');
+  try {
+    const url = URL.createObjectURL(file); const img = await loadImage(url);
+    S.raw = toCanvas(img, 2200); URL.revokeObjectURL(url);
+    await new Promise(r => setTimeout(r, 30));
+    S.fixed = enhance(S.raw); S.isSample = false; S.ox = 0; S.oy = 0;
+    $('filelabel').textContent = 'Ganti foto'; $('uplabel').classList.add('ganti');
+    $('hint').textContent = 'Geser foto di pratinjau kalau mau atur posisinya.';
+    setStatus(''); draw();
+  } catch (err){ setStatus('Foto tidak bisa dibuka. Coba pilih foto lain.'); }
+});
+
+let drag = null;
+cv.addEventListener('pointerdown', e => {
+  const r = cv.getBoundingClientRect(), f = PHOTO_RECT;
+  const px = (e.clientX - r.left) * cv.width / r.width, py = (e.clientY - r.top) * cv.height / r.height;
+  if (px < f.x || px > f.x + f.w || py < f.y || py > f.y + f.h) return;
+  drag = { x: e.clientX, y: e.clientY, k: cv.width / r.width }; cv.setPointerCapture(e.pointerId); cv.classList.add('drag');
+});
+cv.addEventListener('pointermove', e => {
+  if (!drag) return; const g = geom(); if (!g) return;
+  const dx = (e.clientX - drag.x) * drag.k, dy = (e.clientY - drag.y) * drag.k; drag.x = e.clientX; drag.y = e.clientY;
+  if (g.mx > 0) S.ox = Math.max(-1, Math.min(1, S.ox + dx / g.mx));
+  if (g.my > 0) S.oy = Math.max(-1, Math.min(1, S.oy + dy / g.my));
+  draw();
+});
+const endDrag = () => { drag = null; cv.classList.remove('drag'); };
+cv.addEventListener('pointerup', endDrag); cv.addEventListener('pointercancel', endDrag);
+
+/* simpan */
+function setStatus(t, ok){ $('status').textContent = t; $('status').classList.toggle('ok', !!ok); }
+function tanggal(){ const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+$('save').addEventListener('click', async () => {
+  if (S.isSample){ setStatus('Upload foto makanan dulu ya.'); return; }
+  draw();
+  const blob = await new Promise(r => cv.toBlob(r, 'image/jpeg', 0.92));
+  const name = `bhatra-${tanggal()}-${THEMES[S.theme].name.toLowerCase()}-${S.fmt}.jpg`;
+  const file = new File([blob], name, { type: 'image/jpeg' });
+  // HP: buka menu Bagikan (Simpan gambar / WA / IG). Kalau tidak bisa: unduh biasa.
+  if (navigator.canShare && navigator.canShare({ files: [file] })){
+    try { await navigator.share({ files: [file], title: 'Poster BHATRA' }); setStatus('Poster siap. Pilih Simpan gambar, WA, atau IG.', true); return; }
+    catch (e){ if (e && e.name === 'AbortError'){ setStatus('Batal.'); return; } }
+  }
+  const url = URL.createObjectURL(blob), a = document.createElement('a');
+  a.href = url; a.download = name; document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+  setStatus('Poster tersimpan di folder Unduhan.', true);
+});
+
+/* aplikasi & offline */
+function netStatus(){ $('net').textContent = navigator.onLine ? '' : 'MODE OFFLINE'; }
+addEventListener('online', netStatus); addEventListener('offline', netStatus); netStatus();
+if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+let promptEvt = null;
+const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+addEventListener('beforeinstallprompt', e => { e.preventDefault(); promptEvt = e; if (!standalone) $('install').hidden = false; });
+$('installBtn').addEventListener('click', async () => {
+  if (promptEvt){ promptEvt.prompt(); await promptEvt.userChoice; promptEvt = null; $('install').hidden = true; }
+});
+if (!standalone && /iphone|ipad/i.test(navigator.userAgent)){
+  $('install').hidden = false; $('installBtn').hidden = true;
+  $('installText').textContent = 'Pasang di iPhone: tekan tombol Bagikan, lalu "Tambah ke Layar Utama".';
+}
+addEventListener('appinstalled', () => { $('install').hidden = true; });
+
+/* mulai */
+(async () => {
+  $('note').value = 'Ayam goreng bawang putih hari ini ready!';
+  S.theme = todayTheme();
+  draw();
+  try {
+    const enc = s => 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(s);
+    [logoImg, bhreImg, trahImg] = await Promise.all([loadImage(enc(LOGO_SVG)), loadImage(enc(BHRE_SVG)), loadImage(enc(TRAH_SVG))]);
+    S.raw = toCanvas(await loadImage(SAMPLE), 1200);
+  } catch (e) {}
+  draw();
+  try { await Promise.all([document.fonts.load(`800 40px ${FD}`), document.fonts.load(`800 24px ${FB}`), document.fonts.load(`700 24px ${FB}`), document.fonts.load(`500 18px ${FB}`)]); } catch (e) {}
+  draw(); document.fonts && document.fonts.ready.then(draw);
+})();
+</script>
+</body>
+</html>
