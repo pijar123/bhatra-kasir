@@ -1,0 +1,37 @@
+name: Kirim gambar maskot ke bhatra.id
+# Mengganti gambar di public_html/img (logo, avatar, ikon) dengan isi folder situs/img.
+# Kode situs tidak disentuh. Gambar lama diunduh dulu sebagai cadangan (Artifacts di halaman run).
+# Pakai secret yang sama dengan aplikasi Poster: FTP_SERVER, FTP_USERNAME, FTP_PASSWORD.
+on:
+  push:
+    branches: [main]
+    paths: ["situs/img/**", ".github/workflows/kirim-gambar-situs.yml"]
+  workflow_dispatch:
+jobs:
+  kirim:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cadangkan gambar lama
+        env: { S: "${{ secrets.FTP_SERVER }}", U: "${{ secrets.FTP_USERNAME }}", P: "${{ secrets.FTP_PASSWORD }}" }
+        run: |
+          mkdir -p cadangan
+          for f in $(ls situs/img); do
+            curl -s --fail -o "cadangan/$f" --user "$U:$P" "ftp://$S/img/$f" || echo "tidak ada di server: $f"
+          done
+          ls -la cadangan
+      - uses: actions/upload-artifact@v4
+        with: { name: gambar-lama, path: cadangan/ }
+      - name: Unggah gambar baru
+        env: { S: "${{ secrets.FTP_SERVER }}", U: "${{ secrets.FTP_USERNAME }}", P: "${{ secrets.FTP_PASSWORD }}" }
+        run: |
+          for f in $(ls situs/img); do
+            curl -s --fail --ftp-create-dirs -T "situs/img/$f" --user "$U:$P" "ftp://$S/img/$f" && echo "terkirim: $f"
+          done
+      - name: Cek live
+        run: |
+          sleep 5
+          for f in $(ls situs/img); do
+            curl -s -A "Mozilla/5.0" "https://bhatra.id/img/$f?cek=$GITHUB_RUN_ID" -o live.tmp
+            cmp -s live.tmp "situs/img/$f" && echo "SAMA  $f" || echo "::warning::BEDA $f (cache hosting? cek lagi beberapa menit)"
+          done
