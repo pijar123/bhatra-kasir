@@ -8,7 +8,12 @@ Diperbarui: 15 Nov 2026
 - Sistem v2 banyak warung (branch `produk`): toko, dashboard, daftar, pusat, produk, legal; 8 tema + desain khusus; backup harian & pantau tiap jam. Lulus uji database & browser. Belum dipasang ke bhatra.id.
 - Model jual: langganan Dasar ±49rb / Pro ±99rb per bulan, coba gratis 14 hari, tahunan gratis 2 bulan.
 
+- Maskot diganti karakter Little Bhre (15 Nov 2026, disetujui istri): logo, avatar, ikon aplikasi (web/img), aplikasi Poster (main, poster-v2). Aset desain di Mac ~/MABES/bhatra.
+
 ## Tugas berikutnya
+- [ ] Ganti foto profil IG/TikTok/WA ke avatar baru.
+- [ ] Situs yang sedang jalan (v1) masih maskot lama sampai v2 dipasang, atau unggah web/img baru ke public_html/img lewat hPanel.
+- [ ] Carousel komik "Kenapa namanya BHATRA?" masih maskot lama.
 - [ ] Pasang v2 (lihat README, ±20 menit, malam setelah tutup): backup → migrasi 001, 002, 003 → unggah web/ → admin pusat → deploy push → URL & SMTP Supabase → cek.
 - [ ] Isi secret GitHub `DB_PASSWORD` & `BACKUP_PASSWORD` untuk backup harian.
 - [ ] Fase 0 pilot BHATRA ±1 minggu → lolos jika 7 hari tanpa QRIS/pesanan terlewat.

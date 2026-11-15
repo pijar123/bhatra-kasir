@@ -1,4 +1,4 @@
-const CACHE = 'warung-v9';
+const CACHE = 'warung-v10';
 const SHELL = ['/', '/index.html', '/app.css', '/shop.js', '/qris.js', '/themes.js', '/pantau.js', '/config.js', '/install.js', '/img/toko-192.png'];
 self.addEventListener('install', e => { self.skipWaiting(); e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).catch(() => {})); });
 self.addEventListener('activate', e => e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())));
