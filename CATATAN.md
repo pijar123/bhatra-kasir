@@ -8,18 +8,23 @@ Diperbarui: 15 Nov 2026
 - Sistem v2 banyak warung (branch `produk`): toko, dashboard, daftar, pusat, produk, legal; 8 tema + desain khusus; backup harian & pantau tiap jam. Lulus uji database & browser. Belum dipasang ke bhatra.id.
 - Model jual: langganan Dasar ±49rb / Pro ±99rb per bulan, coba gratis 14 hari, tahunan gratis 2 bulan.
 
-- Maskot diganti karakter Little Bhre (15 Nov 2026, disetujui istri): logo, avatar, ikon aplikasi (web/img), aplikasi Poster (main, poster-v2). Aset desain di Mac ~/MABES/bhatra.
-
-- Situs live (v1) diperbarui lewat workflow "Kirim situs" di branch main: folder situs/ = salinan file live + img/. Tiap kirim, semua alamat img/ otomatis diberi ?v=<jam kirim> supaya HP langsung ambil gambar terbaru (gambar di-cache hosting 7 hari, halaman tidak). Ubah gambar/halaman live → edit situs/ di main lalu push. Saat v2 dipasang, terapkan cara ?v= yang sama.
-- Banner promo ada di Supabase (settings.banners + storage "banner"), diganti 15 Nov ke versi maskot baru; file banner lama masih di storage.
+- Maskot diganti karakter Little Bhre (15 Nov 2026): logo A, avatar C, file maskot, KV 01–18 + 19, ikon & logo situs, aplikasi Poster, banner situs. Arsip lama di _lama-datar/. Skrip di _kerja/.
+- Situs bhatra.id: gambar diberi nomor versi otomatis (workflow "Kirim situs"), update langsung tampil.
+- Strategi konten baru (15 Nov): `strategi-konten.md` + skill `strategi-konten-bhatra`. Antrean lama 16 Nov dibatalkan; antrean Bhatra kosong.
+- Script 4 Reels 17–23 Nov: `konten-harian/2026-11-minggu4/script.md`. Video 1 "Kulkas cuma telur satu" jadi (v2: set TK + rig Little Bhre + suara Bhre), menunggu ACC.
 
 ## Tugas berikutnya
-- [ ] Ganti foto profil IG/TikTok/WA ke avatar baru.
+- [ ] Ganti foto profil IG/TikTok/WA ke avatar baru (brand/logo/png/bhatra-logo-C-avatar-1024px.png).
+- [x] Maskot baru live di bhatra.id (img/ via workflow "Kirim gambar maskot", 15 Nov) dan bhatra.id/poster.
+- [ ] ACC video 1 → jadwalkan Sen 17 Nov 17:00 (IG + TikTok).
+- [ ] Rekam footage HP untuk video 2 "Dengerin dulu" (Rab 19, 11:00) dan video 3 "Uang jajan sisa 20rb" (Jum 21, 17:00) sesuai shot list.
+- [ ] Animasi video 4 "Hujan, nggak bisa keluar" (Min 23, 17:00) dengan kerangka reel1b.
+- [ ] Hapus branch `banner-baru` di GitHub (tidak bisa dari sesi Claude).
 - [ ] Carousel komik "Kenapa namanya BHATRA?" masih maskot lama.
 - [ ] Pasang v2 (lihat README, ±20 menit, malam setelah tutup): backup → migrasi 001, 002, 003 → unggah web/ → admin pusat → deploy push → URL & SMTP Supabase → cek.
 - [ ] Isi secret GitHub `DB_PASSWORD` & `BACKUP_PASSWORD` untuk backup harian.
 - [ ] Fase 0 pilot BHATRA ±1 minggu → lolos jika 7 hari tanpa QRIS/pesanan terlewat.
-- [ ] Posting carousel komik 1 tiap 2–3 hari (cerita 4 pas hujan).
+- [ ] ~~Posting carousel komik tiap 2–3 hari~~ → diganti Reels (strategi 15 Nov).
 - [ ] Cari 3–5 warung Kebumen untuk uji (Fase 2).
 
 ## Belum diputuskan

@@ -2,6 +2,7 @@
 
 Sistem pesan online untuk banyak warung. Toko pertama: Warung Jajan BHATRA (bhatra.id).
 Status dan tugas terkini ada di `CATATAN.md`. Cara pasang ada di `README.md`.
+Brand, konten, dan maskot BHATRA: `bhatra-brand/` (baca `bhatra-brand/AI.md` untuk tugas desain/konten).
 
 ## Cara kerja
 - Bahasa Indonesia santai, jawaban singkat, proses hemat.

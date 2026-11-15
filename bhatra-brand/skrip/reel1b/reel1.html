@@ -1,0 +1,69 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="ep.css">
+<style>
+@font-face{font-family:BG;src:url(BricolageGrotesque-800.woff2) format("woff2");font-weight:800}
+@font-face{font-family:PJ;src:url(PlusJakartaSans.woff2) format("woff2");font-weight:200 800}
+html,body{background:#FFF4E2;font-family:PJ}
+.cap{font-family:BG;font-weight:800;color:#3A1E12;font-size:70px;top:300px}
+.ov{background:#3A1E12;top:84px;padding:12px 30px}.ov .h{font-family:PJ;font-weight:800;font-size:30px}.ov .tag{background:#F2B33D;color:#3A1E12}.ov .w{font-family:PJ;font-weight:700;font-size:24px}
+.ilus{top:200px;border-color:#3A1E12;color:#3A1E12;background:#FFF4E2;font-family:PJ}
+.card{width:600px;margin-left:-300px;background:#22262B}
+.scr{background:#FFF4E2;padding:0 0 26px}
+.bh{background:#C8372D;color:#FFF4E2;text-align:center;font-family:BG;font-size:56px;padding:34px 0 22px}
+.bu{text-align:center;font-weight:700;font-size:22px;color:#6E5040;margin:14px 0 18px}
+.kat{font-family:BG;font-size:36px;color:#3A1E12;margin:0 30px 14px;border-bottom:8px solid #F2B33D;display:inline-block}
+.it{display:flex;align-items:center;gap:16px;background:#FFFBF4;border:3px solid #EAD7B8;border-radius:22px;padding:16px;margin:0 26px 12px;position:relative}
+.it .ph{width:84px;height:70px;border-radius:14px;background:#C9742C;flex:none}
+.it .n{font-family:BG;font-size:30px;color:#3A1E12;line-height:1.05}.it .p{font-weight:800;font-size:24px;color:#C8372D;margin-top:4px}
+.it .plus{position:absolute;right:18px;top:50%;margin-top:-30px;width:60px;height:60px;border-radius:50%;background:#C8372D;color:#fff;font-size:44px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.toast{background:#3A1E12;font-family:PJ}.toast b{font-family:BG}
+#bcta{position:absolute;inset:0;background:#FFF4E2;z-index:30;opacity:0;display:flex;flex-direction:column;align-items:center;padding-top:300px;box-sizing:border-box;color:#3A1E12}
+#bcta .lg{width:800px;height:571px}
+#bcta .k{font-family:BG;font-size:64px;margin-top:10px}
+#bcta .a{font-weight:800;font-size:36px;color:#C8372D;margin-top:8px}
+#bcta .q{margin-top:40px;background:#F2B33D;border-radius:30px;padding:22px 40px;font-family:BG;font-size:44px;text-align:center;line-height:1.2;opacity:0}
+#bcta .wa{margin-top:30px;font-weight:800;font-size:40px;opacity:0}
+</style></head><body><div id="stage"></div>
+<script src="hidup.js"></script><script src="tokoh.js"></script><script src="ep.js"></script>
+<script>
+/* BHATRA Reel 1 "Kulkas cuma telur satu". Set, kamera, kartu, iris: ep.js TK Penginapan.
+   Tokoh Bhre & Trah: rig Little Bhre, dikirim per frame dari reel1b.py lewat window.CH. */
+const DUR=18, PINDAH=12.4, CTA=16.3, BG='#FFF4E2';
+const $=id=>document.getElementById(id), {seg,io,out,lerp,spring,elastic}=H, lin=x=>x;
+E.mount({A:{waktu:'sore',jam:true,dinding:'#FFF1DC',motif:'#F6E3C4',bawah:'#EBD5B0',kusen:'#15787D'},
+ B:{waktu:'sore',dinding:'#FFF1DC',motif:'#F6E3C4',bawah:'#EBD5B0',taplak:'#FFF4E2',garis:'#C8372D',kusen:'#C8372D'},
+ html:`<div class="card" id="cardB" style="top:520px"><div class="scr"><div class="bh">BHATRA</div><div class="bu">bhatra.id</div><div class="kat">Paket Nasi</div>
+  <div class="it" id="itA"><div class="ph"></div><div><div class="n">Ayam Goreng<br>Bawang Putih</div><div class="p">Rp16.000</div></div><div class="plus" id="plus">+</div></div>
+  <div class="it"><div class="ph" style="background:#E8B04A"></div><div><div class="n">Ayam Pop Paha</div><div class="p">Rp18.000</div></div></div>
+  <div class="toast" id="toast" style="top:auto;bottom:20px"><div class="ck">✓</div><div><b>Pesanan masuk</b>Diantar sebelum jam 8 malam</div></div></div></div>
+ <div id="bcta"><img class="lg" src="logoA.svg"><div class="k">Kenyang mulai Rp16rb</div><div class="a">Antar &amp; COD sampai 20.00</div>
+  <div class="q" id="ctaQ">Jam berapa Ibu baru<br>mikir masak? 👇</div><div class="wa" id="ctaW">WA 0813-9112-5240 · bhatra.id</div></div>`});
+document.querySelector('.ov').innerHTML='<div class="h"><span class="tag">WA</span>0813-9112-5240</div><div class="w">bhatra.id</div>';
+$('Ameja').innerHTML='';                               // dapur A: tanpa meja, diganti kulkas di lapisan c1
+const TOP=$('fxTop');
+const camA=[[0,{x:760,y:1010,s:2.6}],[1.9,{x:760,y:1010,s:2.7},lin],[2.7,{x:540,y:960,s:1}],[5.3,{x:540,y:960,s:1.04},lin],
+ [6.0,{x:430,y:1290,s:1.9}],[8.5,{x:430,y:1250,s:2.2},lin],[9.1,{x:540,y:980,s:1.05}],[12.4,{x:540,y:980,s:1.08},lin]];
+const camB=[[12.4,{x:540,y:1120,s:1.25}],[13.0,{x:540,y:1080,s:1.12},out],[14.9,{x:540,y:1080,s:1.12}],[15.5,{x:590,y:1230,s:1.36}],[16.3,{x:590,y:1230,s:1.41},lin]];
+window.CH={a1:'',b1:'',b2:''};
+window.setT=function(t){
+  if(t<2.6) H.text($('cap'),'Jam 5 sore.|*Kulkas: telur satu.*',t,.1,{end:2.55,bg:BG,hl:'#F2B33D'});
+  else if(t<5.5) H.text($('cap'),'Bhre &amp; Trah:|*lapar.*'.replace('&amp;','&'),t,2.7,{end:5.45,bg:BG,hl:'#F2B33D'});
+  else if(t<8.9) H.text($('cap'),'Ibu baru pulang.|*Capek banget.*',t,5.6,{end:8.85,bg:BG,hl:'#F2B33D'});
+  else if(t<12.4) H.text($('cap'),'Pesan dari HP:|*bhatra.id*',t,9.0,{end:12.3,bg:BG,hl:'#F2B33D'});
+  else if(t<15.0) H.text($('cap'),'Ayam bawang putih.|*Rp16rb.*',t,12.7,{end:14.95,bg:BG,hl:'#F2B33D'});
+  else H.text($('cap'),'Diantar sampai|*jam 8 malam.*',t,15.05,{end:16.3,bg:BG,hl:'#F2B33D'});
+  const cd=E.kartu('cardB',t,9.2,12.3,{pk:H.punch(t,10.6,.3,.05)});
+  E.frame(t,{camA,camB,pindah:PINDAH,pindahXY:[540,1000],dim:cd,shakeA:H.shake(t,6.3,.25,4,2),shakeB:H.shake(t,13.85,.3,8,4),stA:{jam:17},stB:{uap:1,jam:17}});
+  $('Ac1').innerHTML=CH.a1; $('Bc1').innerHTML=CH.b1; $('Bc2').innerHTML=CH.b2;
+  /* HP: ketuk tombol tambah, pesanan masuk */
+  $('itA').style.borderColor=t>10.6?'#C8372D':'#EAD7B8';
+  $('plus').style.transform=`scale(${H.punch(t,10.6,.3,.3)})`;
+  H.ring(TOP,'tap',t,10.6,{x:780,y:900,r:110,color:'#C8372D',dur:.45});
+  const ts=spring(seg(t,11.1,11.7),1.3,5); $('toast').style.transform=`translateY(${(1-ts)*220}px)`; $('toast').style.opacity=t>11.1?1:0;
+  H.burst(TOP,'cf1',t,13.85,{x:540,y:1250,n:18,kind:'mix',spread:220,speed:480,seed:5});
+  H.lines(TOP,'kaget',t,6.3,{x:260,y:1370,n:8,r0:90,r1:150,color:'#C8372D',dur:.35});
+  /* CTA Bhatra */
+  H.iris($('bcta'),t,CTA,.5,{x:540,y:1250});
+  E.pop('ctaQ',t,CTA+.6,null,{rot:-2}); $('ctaW').style.opacity=seg(t,CTA+1.0,CTA+1.3);
+};
+setT(0);
+</script></body></html>

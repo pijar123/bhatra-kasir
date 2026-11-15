@@ -1,0 +1,35 @@
+@font-face{font-family:P;src:url(file:///usr/share/fonts/truetype/google-fonts/Poppins-Bold.ttf);font-weight:700}
+@font-face{font-family:P;src:url(file:///usr/share/fonts/truetype/google-fonts/Poppins-Medium.ttf);font-weight:500}
+@font-face{font-family:P;src:url(file:///usr/share/fonts/truetype/google-fonts/Poppins-Regular.ttf);font-weight:400}
+html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#F6EAD6;font-family:P}
+#stage{position:absolute;inset:0;overflow:hidden}
+svg.full{position:absolute;inset:0}
+#dim{position:absolute;inset:0;background:#16202A;opacity:0;z-index:5}
+#html{position:absolute;inset:0;z-index:12}
+.ov{position:absolute;top:70px;left:50%;transform:translateX(-50%);background:#16202A;color:#fff;border-radius:22px;padding:16px 34px;text-align:center;z-index:40;white-space:nowrap}
+.ov .h{font-weight:700;font-size:30px;display:flex;gap:12px;align-items:center;justify-content:center}
+.ov .tag{background:#FFD45C;color:#16202A;border-radius:8px;padding:1px 10px;font-size:22px}
+.ov .w{font-weight:400;font-size:24px;opacity:.9;margin-top:2px}
+.ilus{position:absolute;top:196px;left:50%;transform:translateX(-50%);background:#FCF5EB;color:#173336;border:3px solid #173336;border-radius:30px;padding:2px 22px;font-size:22px;font-weight:500;z-index:40;white-space:nowrap}
+.cap{position:absolute;left:40px;right:40px;top:262px;text-align:center;font-weight:700;color:#173336;font-size:68px;line-height:1.22;z-index:25}
+.bub{position:absolute;background:#FCF5EB;border:5px solid #16202A;border-radius:30px;padding:14px 28px;font-size:36px;font-weight:500;color:#173336;box-shadow:8px 8px 0 #16202A;opacity:0;white-space:nowrap;line-height:1.25}
+.bub.t{background:#DCF3E4}.bub.k{background:#FFD45C;font-weight:700}.bub.m{background:#FD5B35;color:#fff;font-weight:700}
+.bub small{display:block;font-size:22px;opacity:.6;font-weight:400}
+.card{position:absolute;left:50%;top:500px;width:620px;margin-left:-310px;background:#16202A;border-radius:56px;padding:18px;box-sizing:border-box;box-shadow:0 30px 60px rgba(0,0,0,.3);opacity:0}
+.scr{background:#fff;border-radius:40px;padding:30px 26px;box-sizing:border-box;position:relative;overflow:hidden}
+.scr .t{font-weight:700;font-size:30px;color:#173336}.scr .s{font-size:20px;color:#7a8580;margin-bottom:16px}
+.room{display:flex;align-items:center;gap:16px;border:3px solid #eee6da;border-radius:20px;padding:14px;margin-bottom:12px;position:relative}
+.room .sw{width:64px;height:52px;border-radius:12px}.room .n{font-weight:700;font-size:24px;color:#173336}.room .p{font-size:18px;color:#7a8580}
+.badge{position:absolute;right:14px;top:50%;color:#fff;font-weight:700;font-size:20px;border-radius:12px;padding:6px 14px;transform:translateY(-50%)}
+.badge.g{background:#2DBE78}.badge.o{background:#FD5B35}
+.toast{position:absolute;left:20px;right:20px;top:20px;background:#13343B;color:#fff;border-radius:26px;padding:22px 26px;font-size:26px;display:flex;gap:18px;align-items:center;box-shadow:0 12px 30px rgba(0,0,0,.35)}
+.toast b{display:block;font-size:32px}.toast .ck{width:64px;height:64px;border-radius:50%;background:#2DBE78;flex:none;display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:700}
+.cta{position:absolute;inset:0;background:#13343B;z-index:30;opacity:0;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;color:#fff;padding-top:330px;box-sizing:border-box}
+.cta .kom{background:#FFD45C;color:#16202A;font-weight:700;font-size:34px;border-radius:40px;padding:8px 32px;margin-bottom:26px;opacity:0}
+.cta .big{font-weight:700;font-size:74px;text-align:center;line-height:1.18;padding:0 50px}
+.cta .btn{margin-top:50px;background:#FD5B35;border-radius:60px;padding:24px 60px;font-weight:700;font-size:48px}
+.cta .url{margin-top:30px;font-weight:700;font-size:40px}.cta .sm{margin-top:12px;font-size:28px;opacity:0}
+.hr{display:flex;justify-content:space-between;align-items:center;font-size:28px;padding:16px 4px;border-bottom:3px dashed #e3dccf;color:#173336}
+.hr b{font-size:34px}.hr.m b{color:#FD5B35}.hr.g b{color:#15787D}
+.stempel{position:absolute;right:26px;bottom:26px;border:8px solid #2DBE78;color:#2DBE78;font-weight:700;font-size:54px;border-radius:16px;padding:0 22px;background:rgba(255,255,255,.85)}
+.tag2{position:absolute;left:50%;top:446px;transform:translateX(-50%);background:#16202A;color:#FFD45C;font-weight:700;font-size:34px;border-radius:14px;padding:4px 26px;opacity:0;z-index:13}
