@@ -10,9 +10,11 @@ Diperbarui: 15 Nov 2026
 
 - Maskot diganti karakter Little Bhre (15 Nov 2026, disetujui istri): logo, avatar, ikon aplikasi (web/img), aplikasi Poster (main, poster-v2). Aset desain di Mac ~/MABES/bhatra.
 
+- Situs live (v1) diperbarui lewat workflow "Kirim situs" di branch main: folder situs/ = salinan file live + img/. Tiap kirim, semua alamat img/ otomatis diberi ?v=<jam kirim> supaya HP langsung ambil gambar terbaru (gambar di-cache hosting 7 hari, halaman tidak). Ubah gambar/halaman live → edit situs/ di main lalu push. Saat v2 dipasang, terapkan cara ?v= yang sama.
+- Banner promo ada di Supabase (settings.banners + storage "banner"), diganti 15 Nov ke versi maskot baru; file banner lama masih di storage.
+
 ## Tugas berikutnya
 - [ ] Ganti foto profil IG/TikTok/WA ke avatar baru.
-- [ ] Situs yang sedang jalan (v1) masih maskot lama sampai v2 dipasang, atau unggah web/img baru ke public_html/img lewat hPanel.
 - [ ] Carousel komik "Kenapa namanya BHATRA?" masih maskot lama.
 - [ ] Pasang v2 (lihat README, ±20 menit, malam setelah tutup): backup → migrasi 001, 002, 003 → unggah web/ → admin pusat → deploy push → URL & SMTP Supabase → cek.
 - [ ] Isi secret GitHub `DB_PASSWORD` & `BACKUP_PASSWORD` untuk backup harian.
