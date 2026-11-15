@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<base href="/">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>BHATRA Owner</title>
+<meta name="theme-color" content="#3A1E12">
+<link rel="icon" href="img/admin-192.png">
+<link rel="manifest" href="admin.webmanifest">
+<link rel="apple-touch-icon" href="img/admin-touch.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="BHATRA Owner">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap">
+<link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body data-app="admin">
+<div class="install" id="installBar" hidden>
+    <img src="img/admin-192.png" alt="" width="44" height="44">
+    <span><b>Pasang BHATRA Owner di HP</b><small id="installHint">Buka pesanan langsung dari layar utama</small></span>
+    <button type="button" class="chip" data-install>Pasang</button>
+    <button type="button" class="x" id="installX" aria-label="Tutup">×</button>
+  </div>
+<div id="loginView" class="wrap" hidden>
+  <div class="card" style="margin-top:48px">
+    <img src="img/avatar.svg" alt="" width="64" height="64">
+    <h1 style="margin-top:12px">Dashboard BHATRA</h1>
+    <form id="loginForm">
+      <label>Email<input name="email" type="email" autocomplete="username" required></label>
+      <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+      <p class="err" id="loginErr" hidden></p>
+      <button class="btn btn-red" type="submit">Masuk</button>
+    </form>
+  </div>
+</div>
+
+<div id="appView" hidden>
+  <header class="top">
+    <div class="wrap bar">
+      <h1>BHATRA</h1>
+      <label class="switch"><input type="checkbox" id="openToggle"><span>Warung buka</span></label>
+      <button class="x" id="logout" type="button" aria-label="Keluar" title="Keluar">⎋</button>
+    </div>
+    <nav class="wrap tabs" role="tablist">
+      <button role="tab" data-tab="aktif" aria-selected="true">Aktif <span id="cAktif" class="count"></span></button>
+      <button role="tab" data-tab="selesai" aria-selected="false">Selesai</button>
+      <button role="tab" data-tab="menu" aria-selected="false">Menu</button>
+      <button role="tab" data-tab="rekap" aria-selected="false">Rekap</button>
+      <button role="tab" data-tab="atur" aria-selected="false">Atur</button>
+    </nav>
+  </header>
+  <main class="wrap" id="panel"></main>
+</div>
+
+<footer><p><b>BHATRA Owner</b> · dashboard warung</p><p><a href="#" data-install style="font-weight:800">Pasang BHATRA Owner di HP</a></p></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="admin.js"></script>
+<script src="install.js"></script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Warung Jajan BHATRA · Pesan Online</title>
+<meta name="description" content="Dari dapur Bhre & Trah. Ayam goreng bawang putih, sate taichan, ayam pop. Antar, COD, atau ambil di rumah. Kebumen.">
+<meta name="theme-color" content="#C8372D">
+<meta property="og:title" content="Warung Jajan BHATRA">
+<meta property="og:description" content="Masakan rumahan, harga pelajar. Pesan online, bayar tunai atau QRIS.">
+<meta property="og:image" content="img/avatar.svg">
+<link rel="icon" href="img/icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="BHATRA">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div id="shopView">
+  <header class="hero">
+    <svg class="spark" style="top:22px;left:20px" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C13 8 16 11 24 12 16 13 13 16 12 24 11 16 8 13 0 12 8 11 11 8 12 0Z" fill="currentColor"/></svg>
+    <svg class="spark" style="top:120px;left:34px;width:14px;height:14px" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C13 8 16 11 24 12 16 13 13 16 12 24 11 16 8 13 0 12 8 11 11 8 12 0Z" fill="currentColor"/></svg>
+    <div class="logo" data-svg="img/logo.svg" role="img" aria-label="Warung Jajan BHATRA"></div>
+    <h1 class="kicker">Dari dapur Bhre &amp; Trah</h1>
+    <p class="sub">Masakan rumahan, harga pelajar.</p>
+    <p id="openInfo" class="pill">Memuat…</p>
+    <br><p class="sticker">Kenyang mulai <b>Rp16rb</b></p>
+  </header>
+  <div class="install" id="installBar" hidden>
+    <img src="img/icon-192.png" alt="" width="44" height="44">
+    <span><b>Pasang aplikasi BHATRA</b><small id="installHint">Pesan lebih cepat langsung dari layar utama</small></span>
+    <button type="button" class="chip" data-install>Pasang</button>
+    <button type="button" class="x" id="installX" aria-label="Tutup">×</button>
+  </div>
+  <section class="wrap mine-box" id="mine" hidden></section>
+  <div class="banners" id="banners" hidden></div>
+  <nav class="cats" id="cats" aria-label="Kategori menu"></nav>
+  <main class="wrap" id="menu"><p class="muted" style="padding:24px 0">Memuat menu…</p></main>
+  <div class="spacer"></div>
+</div>
+
+<div id="trackView" class="wrap" hidden></div>
+
+<div class="cartbar" id="cartbar" hidden>
+  <button class="btn btn-red" id="openCheckout" type="button"></button>
+</div>
+
+<div class="sheet" id="checkout" hidden role="dialog" aria-modal="true" aria-labelledby="coTitle">
+  <div class="panel">
+    <div class="head"><h2 id="coTitle">Pesanan kamu</h2><button class="x" type="button" id="closeCheckout" aria-label="Tutup">×</button></div>
+    <ul class="list" id="cartList"></ul>
+    <div class="row"><span>Subtotal</span><span id="subtotal"></span></div>
+    <form id="coForm" novalidate>
+      <label>Nama<input name="name" autocomplete="name" required maxlength="60"></label>
+      <label>Nomor WhatsApp<input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="08xxxxxxxxxx" required maxlength="20"></label>
+      <fieldset>
+        <legend>Cara terima</legend>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="method" value="delivery" checked><span><b>Antar ke alamat</b><small id="dlvNote">Ongkir Rp1.000/km · jam 10.00–20.00</small></span></label>
+          <label class="opt"><input type="radio" name="method" value="cod"><span><b>COD (ketemuan)</b><small id="codNote">Titik temu yang disepakati · jam 10.00–20.00</small></span></label>
+          <label class="opt"><input type="radio" name="method" value="pickup"><span><b>Ambil di rumah</b><small>Tanpa ongkir · Maps: RUMAH BHRE</small></span></label>
+        </div>
+      </fieldset>
+      <div id="locWrap">
+        <div id="mapBox" hidden>
+          <p class="lbl">Titik antar</p>
+          <button type="button" class="btn btn-ghost" id="locBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Pakai lokasi saya</button>
+          <div id="map" class="map" aria-label="Peta. Tap untuk memilih titik antar"></div>
+          <p class="muted" style="font-size:13px;margin-top:6px">Kurang pas? Geser pin atau tap peta.</p>
+        </div>
+        <label id="addrWrap" style="margin-top:12px">Detail alamat / patokan<textarea name="address" rows="2" maxlength="300" placeholder="Nama jalan, RT/RW, warna pagar, patokan"></textarea></label>
+      </div>
+      <fieldset>
+        <legend>Bayar</legend>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="payment" value="tunai" checked><span><b>Tunai</b></span></label>
+          <label class="opt"><input type="radio" name="payment" value="qris"><span><b>QRIS</b><small>DANA, GoPay, OVO, ShopeePay, m-banking · nominal otomatis</small></span></label>
+        </div>
+      </fieldset>
+      <label>Catatan <span class="muted" style="font-weight:600">(opsional)</span><textarea name="note" rows="2" maxlength="300" placeholder="Contoh: sambal dipisah, tidak pedas"></textarea></label>
+      <div class="promo"><label for="vcIn">Kode promo <span class="muted" style="font-weight:600">(opsional)</span></label><div class="promo-row"><input id="vcIn" maxlength="20" autocomplete="off" autocapitalize="characters" placeholder="Contoh: HEMAT5"><button type="button" class="chip" id="vcBtn">Pakai</button></div><p id="vcMsg" hidden></p></div>
+      <p class="muted" id="etaNote" style="font-size:14px;margin:0"></p>
+      <p class="note" id="ongkirNote">Ongkir dihitung dari titik lokasi yang kamu kirim lewat WA setelah memesan.</p>
+      <p class="err" id="coErr" hidden></p>
+      <button class="btn btn-red" id="coSubmit" type="submit">Kirim pesanan</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <p><b>Warung Jajan BHATRA</b> · <span id="footHours">Buka 10.00–22.30 WIB</span></p>
+  <p>Karangtempel, Demangsari, Kec. Ayah, Kebumen · <a href="https://wa.me/6281391125240">WA 0813-9112-5240</a></p>
+  <p><a href="#" data-install style="font-weight:800">Pasang aplikasi BHATRA di HP</a></p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="config.js"></script>
+<script src="qris.js"></script>
+<script src="shop.js"></script>
+<script src="install.js"></script>
+</body>
+</html>

@@ -1,37 +1,46 @@
-name: Kirim gambar maskot ke bhatra.id
-# Mengganti gambar di public_html/img (logo, avatar, ikon) dengan isi folder situs/img.
-# Kode situs tidak disentuh. Gambar lama diunduh dulu sebagai cadangan (Artifacts di halaman run).
-# Pakai secret yang sama dengan aplikasi Poster: FTP_SERVER, FTP_USERNAME, FTP_PASSWORD.
+name: Kirim situs (gambar + nomor versi) ke bhatra.id
+# Isi folder situs/ = salinan file situs yang live (sama persis dengan v1/), plus situs/img.
+# Tiap kali jalan: semua alamat img/... di halaman diberi ?v=<jam kirim>, supaya HP pembeli
+# langsung mengambil gambar terbaru (gambar di hosting di-cache 7 hari, halaman tidak).
+# File lama di hosting dicadangkan dulu (Artifacts "cadangan-situs" di halaman run).
+# Secret: FTP_SERVER, FTP_USERNAME, FTP_PASSWORD (sama dengan aplikasi Poster).
 on:
   push:
     branches: [main]
-    paths: ["situs/img/**", ".github/workflows/kirim-gambar-situs.yml"]
+    paths: ["situs/**", ".github/workflows/kirim-gambar-situs.yml"]
   workflow_dispatch:
 jobs:
   kirim:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Cadangkan gambar lama
+      - name: Siapkan file (beri nomor versi gambar)
+        run: |
+          V=$(date -u +%Y%m%d%H%M)
+          echo "V=$V" >> $GITHUB_ENV
+          rm -rf kirim && cp -r situs kirim
+          find kirim -type f \( -name '*.html' -o -name '*.js' -o -name '*.webmanifest' \) -print0 \
+            | xargs -0 sed -i -E "s#(img/[A-Za-z0-9_-]+\.(svg|png))(\?v=[0-9]+)?#\1?v=$V#g"
+          grep -rho "img/[A-Za-z0-9_-]*\.\(svg\|png\)?v=[0-9]*" kirim | sort | uniq -c
+          (cd kirim && find . -type f | sed 's#^\./##' | sort) > daftar.txt; cat daftar.txt
+      - name: Cadangkan file lama
         env: { S: "${{ secrets.FTP_SERVER }}", U: "${{ secrets.FTP_USERNAME }}", P: "${{ secrets.FTP_PASSWORD }}" }
         run: |
-          mkdir -p cadangan
-          for f in $(ls situs/img); do
-            curl -s --fail -o "cadangan/$f" --user "$U:$P" "ftp://$S/img/$f" || echo "tidak ada di server: $f"
-          done
-          ls -la cadangan
+          while read f; do
+            mkdir -p "cadangan/$(dirname "$f")"
+            curl -s --fail -o "cadangan/$f" --user "$U:$P" "ftp://$S/$f" || echo "belum ada di server: $f"
+          done < daftar.txt
       - uses: actions/upload-artifact@v4
-        with: { name: gambar-lama, path: cadangan/ }
-      - name: Unggah gambar baru
+        with: { name: cadangan-situs, path: cadangan/ }
+      - name: Kirim
         env: { S: "${{ secrets.FTP_SERVER }}", U: "${{ secrets.FTP_USERNAME }}", P: "${{ secrets.FTP_PASSWORD }}" }
         run: |
-          for f in $(ls situs/img); do
-            curl -s --fail --ftp-create-dirs -T "situs/img/$f" --user "$U:$P" "ftp://$S/img/$f" && echo "terkirim: $f"
+          # gambar dulu, halaman terakhir (supaya halaman baru tidak menunjuk gambar yang belum ada)
+          for f in $(grep '^img/' daftar.txt) $(grep -v '^img/' daftar.txt); do
+            curl -s --fail --ftp-create-dirs -T "kirim/$f" --user "$U:$P" "ftp://$S/$f" && echo "terkirim: $f" || { echo "::error::gagal: $f"; exit 1; }
           done
       - name: Cek live
         run: |
           sleep 5
-          for f in $(ls situs/img); do
-            curl -s -A "Mozilla/5.0" "https://bhatra.id/img/$f?cek=$GITHUB_RUN_ID" -o live.tmp
-            cmp -s live.tmp "situs/img/$f" && echo "SAMA  $f" || echo "::warning::BEDA $f (cache hosting? cek lagi beberapa menit)"
-          done
+          curl -s -A "Mozilla/5.0" "https://bhatra.id/?cek=$GITHUB_RUN_ID" | grep -o "img/logo.svg?v=[0-9]*" | head -1
+          curl -s -A "Mozilla/5.0" "https://bhatra.id/?cek=$GITHUB_RUN_ID" | grep -q "img/logo.svg?v=$V" && echo "OK: halaman memakai versi $V" || echo "::warning::halaman belum memakai versi $V"
