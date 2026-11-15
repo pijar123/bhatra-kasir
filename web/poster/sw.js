@@ -1,6 +1,6 @@
 // Poster BHATRA — simpan semua file aplikasi di HP supaya bisa dipakai tanpa sinyal.
 // Naikkan VERSI tiap kali ada perubahan supaya HP mengambil versi baru.
-const VERSI = 'poster-v1';
+const VERSI = 'poster-v2';
 const FILES = ['./', 'index.html', 'fonts.css', 'fonts/BricolageGrotesque-800.woff2', 'fonts/PlusJakartaSans.woff2',
   'sample.jpg', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'icon-180.png', 'icon-maskable-512.png'];
 self.addEventListener('install', e => {
